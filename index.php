@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Status: 1 = alive, 0 = delete
+ */
 require 'Slim/Slim.php';
 require_once 'idiorm.php';
 require_once './rb.php';
@@ -15,7 +18,6 @@ ORM::configure('return_result_sets', true); // returns result sets
 // Config id column
 ORM::configure('id_column', 'id');
 
-
 // Redbean Config
 R::setup('mysql:host=localhost;dbname=test-slim', 'root', '123456');
 
@@ -24,15 +26,14 @@ R::setup('mysql:host=localhost;dbname=test-slim', 'root', '123456');
 
 \Slim\Slim::registerAutoloader();
 
-$app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'true'));
+$app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
 $app->response()->header('Content-Type', 'application/json');
 // POST:/item/
 $app->post('/item/', function () {
             $item = ORM::for_table('item_info')->create();
-
-            // Chuyển biến từ global POST sang biến địa phương
-            // Chuyển để dễ dàng control data type thay vì gán thẳng
-            if ($_POST != null) {
+            
+            try {
+                if ($_POST != null) {
 
                 if ($_POST['name'] != null) {
                     $name = $_POST['name'];
@@ -85,21 +86,48 @@ $app->post('/item/', function () {
                     $item->categoryid = $categoryid;
                 }
             }
-            return $item->save();
+            $item->status = 1;
+            $item->Aa = 1;
+            if($item->save())
+                echo 1;
+            else echo 0;
+                
+            } catch (Exception $exc) {
+                echo 0;
+            }
+
+
+            // Chuyển biến từ global POST sang biến địa phương
+            // Chuyển để dễ dàng control data type thay vì gán thẳng
+            
+            
+            // Đúng sẽ trả về true
         });
 
 // GET:/item/:id
 $app->get('/item/:id', function ($id) {
-            $item = R::load('item_info', $id);
-            echo json_encode(R::exportAll($item));
+
+            if ($id == 'all') {
+                $items = R::find('item_info');
+                $result = R::exportAll($items);
+            } else {
+                $items = R::load('item_info', $id);
+                $result = R::exportAll($items)[0];
+            }
+            $json = json_encode($result);
+            if ($json == "{\"id\":0}")
+                echo 0;
+            else
+                echo $json;
         });
 
-
 $app->put('/item/:id', function ($id) use($app) {
-            $item = ORM::for_table('item_info')->find_one($id);
-            $data = json_decode($app->getInstance()->request()->getBody());
+    
+            try {
+                $item = ORM::for_table('item_info')->find_one($id);
+                $data = json_decode($app->getInstance()->request()->getBody());
             $item->name = $data->name;
-                        
+
             $item->name = $data->name;
             $item->phone = $data->phone;
             $item->address = $data->address;
@@ -110,10 +138,30 @@ $app->put('/item/:id', function ($id) use($app) {
             $item->price = $data->price;
             $item->categoryname = $data->categoryname;
             $item->categoryid = $data->categoryid;
-            $item->save();
-            //return $item->save();
+            if ($item->save())
+                echo 1;
+            else
+                echo 0;
+            } catch (Exception $exc) {
+                echo 0;
+            }
+
+            
         });
-// Rub the App
+$app->delete('/item/:id', function ($id) {
+
+            $item = R::load('item_info', $id);
+            $id_before = $item->id;
+            R::trash($item);
+            $item_after = ORM::for_table('item_info')->find_one($id);
+            if ((int) $id_before == 0 && (int) $item_after == 0)
+                echo 0;
+            else
+                echo 1;
+            // echo json_encode($item_after);
+        });
+
+// Run the App
 $app->run();
 
 
