@@ -7,6 +7,7 @@ require_once 'idiorm.php';
 ORM::configure('mysql:host=localhost;dbname=test-slim');
 ORM::configure('username', 'root');
 ORM::configure('password', '123456');
+ORM::configure('driver_options', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 
 // Return config
 ORM::configure('return_result_sets', true); // returns result sets
@@ -53,8 +54,7 @@ $app->post('/hello/', function (){
 //    $item->price = $price;
 //    $item->categoryname = $categoryname;
 //    $item->categoryid = $categoryid;
-//    
-//    $item->save();
+        $item->save();
 });
 $app->run();
 /*
