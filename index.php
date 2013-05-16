@@ -54,6 +54,15 @@ $app->post('/item/', function () {
             $item->categoryid = $categoryid;
             return $item->save();
         });
+
+// GET:/item/:id
+$app->get('/item/:id', function ($id) {
+    $item = ORM::for_table('item_info')->where('id', $id)->find_one();
+    
+    echo $item->name;
+    
+            
+        });
 $app->run();
 /*
  * To change this template, choose Tools | Templates
