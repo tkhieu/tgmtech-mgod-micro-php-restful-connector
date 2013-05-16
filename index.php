@@ -99,6 +99,17 @@ $app->put('/item/:id', function ($id) use($app) {
             $item = ORM::for_table('item_info')->find_one($id);
             $data = json_decode($app->getInstance()->request()->getBody());
             $item->name = $data->name;
+                        
+            $item->name = $data->name;
+            $item->phone = $data->phone;
+            $item->address = $data->address;
+            $item->detail = $data->detail;
+            $item->username = $data->username;
+            $item->userid = $data->userid;
+            $item->situation = $data->situation;
+            $item->price = $data->price;
+            $item->categoryname = $data->categoryname;
+            $item->categoryid = $data->categoryid;
             $item->save();
             //return $item->save();
         });
