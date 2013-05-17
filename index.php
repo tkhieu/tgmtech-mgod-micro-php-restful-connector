@@ -167,6 +167,17 @@ $app->delete('/item/:id', function ($id) {
             }
         });
 
+
+// Get /items/category/:id/:page/:limit
+$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
+
+            $offset = $page * $limit;
+
+            $items = R::find('item_info', 'categoryid = :id', array(':id' => $id));
+            $result = R::exportAll($items);
+            $json = json_encode($result);
+            echo $json;
+        });
 // Run the App
 $app->run();
 
