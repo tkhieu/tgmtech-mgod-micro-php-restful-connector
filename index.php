@@ -74,16 +74,16 @@ $app->post('/item/', function () {
 
                     try {
                         if ($_POST['userid'] != null) {
-                        $userid = $_POST['userid'];
-                        $item->userid = $userid;
-                    }
+                            $userid = $_POST['userid'];
+                            $item->userid = $userid;
+                        }
                     } catch (Exception $exc) {
                         //echo $exc->getTraceAsString();
                     }
 
 
 
-                    
+
 
                     if ($_POST['situation'] != null) {
                         $situation = $_POST['situation'];
@@ -208,7 +208,43 @@ $app->delete('/item/:id', function ($id) {
             }
         });
 
-// Run the App
+
+
+// GET /items/category/:id/:page/:limit
+$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
+            $success = ["status" => 1];
+            $false = ["status" => 0];
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
+
+            try {
+                $offset = $page * $limit;
+
+                $items = R::find('item_info', 'categoryid = :id limit :limit offset :offset', array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $result = R::exportAll($items);
+                $json = json_encode($result);
+                echo $json;
+            } catch (Exception $exc) {
+                echo $json_false;
+            }
+        });
+// GET /items/username/:username/:page/:limit
+$app->get('/items/username/:username/:page/:limit', function ($username, $page, $limit) {
+            $success = ["status" => 1];
+            $false = ["status" => 0];
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
+            try {
+                $offset = $page * $limit;
+
+                $items = R::find('item_info', 'username = :username limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $result = R::exportAll($items);
+                $json = json_encode($result);
+                echo $json;
+            } catch (Exception $exc) {
+                echo $json_false;
+            }
+        });
 $app->run();
 
 
