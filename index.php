@@ -21,6 +21,7 @@ ORM::configure('id_column', 'id');
 // Redbean Config
 R::setup('mysql:host=localhost;dbname=test-slim', 'root', '123456');
 
+
 // Đăng ký Slim với request handle
 \Slim\Slim::registerAutoloader();
 // New một Slim App
@@ -29,6 +30,11 @@ $app->response()->header('Content-Type', 'application/json');
 
 // POST /item/
 $app->post('/item/', function () {
+            // CONST
+            $success = ["status" => 1];
+            $false = ["status" => 0];
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
             $item = ORM::for_table('item_info')->create();
 
             try {
@@ -38,6 +44,12 @@ $app->post('/item/', function () {
                         $name = $_POST['name'];
                         $item->name = $name;
                     }
+
+                    if ($_POST['topicid'] != null) {
+                        $topicid = $_POST['topicid'];
+                        $item->topicid = $topicid;
+                    }
+
 
                     if ($_POST['phone'] != null) {
                         $phone = $_POST['phone'];
@@ -60,10 +72,18 @@ $app->post('/item/', function () {
                         $item->username = $username;
                     }
 
-                    if ($_POST['userid'] != null) {
+                    try {
+                        if ($_POST['userid'] != null) {
                         $userid = $_POST['userid'];
                         $item->userid = $userid;
                     }
+                    } catch (Exception $exc) {
+                        //echo $exc->getTraceAsString();
+                    }
+
+
+
+                    
 
                     if ($_POST['situation'] != null) {
                         $situation = $_POST['situation'];
@@ -90,12 +110,18 @@ $app->post('/item/', function () {
                     }
                 }
                 $item->status = 1;
-                if ($item->save())
-                    echo 1;
+                $item->posttime = time();
+                if ($item->save()) {
+                    echo $json_success;
+                    return;
+                }
                 else
-                    echo 0;
+                    echo $json_false;
+                return;
             } catch (Exception $exc) {
-                echo 0;
+                echo $exc->getTraceAsString();
+                echo $json_false;
+                return;
             }
 
 
@@ -106,6 +132,11 @@ $app->post('/item/', function () {
 
 // GET /item/:id
 $app->get('/item/:id', function ($id) {
+            // CONST
+            $success = ["status" => 1];
+            $false = ["status" => 0];
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
 
             if ($id == 'all') {
                 $items = R::find('item_info');
@@ -116,19 +147,24 @@ $app->get('/item/:id', function ($id) {
             }
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
-                echo 0;
+                echo $json_false;
             else
                 echo $json;
         });
 // PUT /item/:id
 $app->put('/item/:id', function ($id) use($app) {
-
+// CONST
+            $success = ["status" => 1];
+            $false = ["status" => 0];
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
             try {
                 $item = ORM::for_table('item_info')->find_one($id);
                 $data = json_decode($app->getInstance()->request()->getBody());
                 $item->name = $data->name;
 
                 $item->name = $data->name;
+                $item->topicid = $data->topicid;
                 $item->phone = $data->phone;
                 $item->address = $data->address;
                 $item->detail = $data->detail;
@@ -139,18 +175,23 @@ $app->put('/item/:id', function ($id) use($app) {
                 $item->categoryname = $data->categoryname;
                 $item->categoryid = $data->categoryid;
                 $item->images = $data->images;
+                $item->updatetime = time();
                 if ($item->save())
-                    echo 1;
+                    echo $json_success;
                 else
-                    echo 0;
+                    echo $json_false;
             } catch (Exception $exc) {
-                echo 0;
+                echo $json_false;
             }
         });
 
 // DELETE /item/:id
 $app->delete('/item/:id', function ($id) {
-
+// CONST
+            $success = ["status" => 1];
+            $false = ["status" => 0];
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
             try {
                 $item = ORM::for_table('item_info')->find_one($id);
                 $status_before = $item->status;
@@ -159,11 +200,11 @@ $app->delete('/item/:id', function ($id) {
                 $item->save();
                 $item_after = ORM::for_table('item_info')->find_one($id);
                 if ((int) $status_before == 1 && (int) $item_after->status == 0)
-                    echo 1;
+                    echo $json_success;
                 else
-                    echo 0;
+                    echo $json_false;
             } catch (Exception $exc) {
-                echo 0;
+                echo $json_false;
             }
         });
 
