@@ -74,16 +74,16 @@ $app->post('/item/', function () {
 
                     try {
                         if ($_POST['userid'] != null) {
-                        $userid = $_POST['userid'];
-                        $item->userid = $userid;
-                    }
+                            $userid = $_POST['userid'];
+                            $item->userid = $userid;
+                        }
                     } catch (Exception $exc) {
                         //echo $exc->getTraceAsString();
                     }
 
 
 
-                    
+
 
                     if ($_POST['situation'] != null) {
                         $situation = $_POST['situation'];
@@ -220,6 +220,32 @@ $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
             echo $json;
         });
 // Run the App
+// Get /items/category/:id/:page/:limit
+$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
+            try {
+                $offset = $page * $limit;
+
+                $items = R::find('item_info', 'categoryid = :id limit :limit offset :offset', array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $result = R::exportAll($items);
+                $json = json_encode($result);
+                echo $json;
+            } catch (Exception $exc) {
+                
+            }
+        });
+// GET /items/username/:username/:page/:limit
+$app->get('/items/username/:username/:page/:limit', function ($id, $page, $limit) {
+            try {
+                $offset = $page * $limit;
+
+                $items = R::find('item_info', 'username = :username limit :limit offset :offset', array(':id' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $result = R::exportAll($items);
+                $json = json_encode($result);
+                echo $json;
+            } catch (Exception $exc) {
+                
+            }
+        });
 $app->run();
 
 
