@@ -88,8 +88,10 @@ $app->post('/item/', function () {
                         $images = $_POST['images'];
                         $item->images = $images;
                     }
+                    
                 }
                 $item->status = 1;
+                $item->posttime = time();
                 if ($item->save())
                     echo 1;
                 else
@@ -139,6 +141,7 @@ $app->put('/item/:id', function ($id) use($app) {
                 $item->categoryname = $data->categoryname;
                 $item->categoryid = $data->categoryid;
                 $item->images = $data->images;
+                $item->updatetime = time();
                 if ($item->save())
                     echo 1;
                 else
