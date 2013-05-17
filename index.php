@@ -99,11 +99,11 @@ $app->post('/item/', function () {
                 $item->status = 1;
                 $item->posttime = time();
                 if ($item->save())
-                    echo 1;
+                    echo '{\'status\': 1}';
                 else
-                    echo 0;
+                    echo '{\'status\': 0}';
             } catch (Exception $exc) {
-                echo 0;
+                echo '{\'status\': 0}';
             }
 
 
@@ -124,7 +124,7 @@ $app->get('/item/:id', function ($id) {
             }
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
-                echo 0;
+                echo '{\'status\': 0}';
             else
                 echo $json;
         });
@@ -150,11 +150,11 @@ $app->put('/item/:id', function ($id) use($app) {
                 $item->images = $data->images;
                 $item->updatetime = time();
                 if ($item->save())
-                    echo 1;
+                    echo '{\'status\': 1}';
                 else
-                    echo 0;
+                    echo '{\'status\': 0}';
             } catch (Exception $exc) {
-                echo 0;
+                echo '{\'status\': 0}';
             }
         });
 
@@ -169,11 +169,11 @@ $app->delete('/item/:id', function ($id) {
                 $item->save();
                 $item_after = ORM::for_table('item_info')->find_one($id);
                 if ((int) $status_before == 1 && (int) $item_after->status == 0)
-                    echo 1;
+                    echo '{\'status\': 1}';
                 else
-                    echo 0;
+                    echo '{\'status\': 0}';
             } catch (Exception $exc) {
-                echo 0;
+                echo '{\'status\': 0}';
             }
         });
 
