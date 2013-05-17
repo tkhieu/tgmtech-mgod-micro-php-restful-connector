@@ -38,6 +38,12 @@ $app->post('/item/', function () {
                         $name = $_POST['name'];
                         $item->name = $name;
                     }
+                    
+                      if ($_POST['topicid'] != null) {
+                        $topicid = $_POST['topicid'];
+                        $item->topicid = $topicid;
+                    }
+
 
                     if ($_POST['phone'] != null) {
                         $phone = $_POST['phone'];
@@ -131,6 +137,7 @@ $app->put('/item/:id', function ($id) use($app) {
                 $item->name = $data->name;
 
                 $item->name = $data->name;
+                $item->topicid = $data->topicid;
                 $item->phone = $data->phone;
                 $item->address = $data->address;
                 $item->detail = $data->detail;
