@@ -6,12 +6,15 @@
 require 'Slim/Slim.php';
 require_once 'idiorm.php';
 require_once './rb.php';
+require_once './config.php';
 
 // Idiorm database config
 // Db Config
-ORM::configure('mysql:host=localhost;dbname=test-slim');
-ORM::configure('username', 'root');
-ORM::configure('password', '123456');
+
+$db_connect = "mysql:host=".$mysql_add."\;dbname=".$mysql_db;
+ORM::configure($db_connect);
+ORM::configure('username', $mysql_username);
+ORM::configure('password', $mysql_password);
 ORM::configure('driver_options', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 // Return config
 ORM::configure('return_result_sets', true); // returns result sets
@@ -19,7 +22,7 @@ ORM::configure('return_result_sets', true); // returns result sets
 ORM::configure('id_column', 'id');
 
 // Redbean Config
-R::setup('mysql:host=localhost;dbname=test-slim', 'root', '123456');
+R::setup($db_connect, $mysql_username, $mysql_password);
 
 
 // Đăng ký Slim với request handle

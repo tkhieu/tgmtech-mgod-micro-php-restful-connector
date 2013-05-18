@@ -16,7 +16,7 @@ CREATE TABLE `item_info` (
   `images` text CHARACTER SET ascii,
   `phone` varchar(15) DEFAULT NULL,
   `address` varchar(1024) DEFAULT NULL,
-  `detail` text,
+  `detail` text CHARACTER SET ascii DEFAULT NULL,
   `username` varchar(100) DEFAULT NULL,
   `userid` varchar(100) DEFAULT NULL,
   `situation` varchar(1024) DEFAULT NULL,
