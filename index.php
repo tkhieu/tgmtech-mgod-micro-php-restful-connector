@@ -149,7 +149,7 @@ $app->get('/item/:id', function ($id) {
                 $result = R::exportAll($items);
             } else {
                 $items = R::load('item_info', $id);
-                $result = R::exportAll($items)[0];
+                $result = array_shift(R::exportAll($items));
             }
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
