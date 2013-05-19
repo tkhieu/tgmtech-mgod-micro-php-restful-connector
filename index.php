@@ -3,11 +3,10 @@
 /**
  * Status: 1 = alive, 0 = delete
  */
-
 //phpinfo();
 
 require 'Slim/Slim.php';
-require_once 'idiorm.php';
+require_once './idiorm.php';
 require_once './rb.php';
 require_once './config.php';
 
@@ -32,11 +31,13 @@ R::setup($db_connect, $mysql_username, $mysql_password);
 \Slim\Slim::registerAutoloader();
 // New một Slim App
 $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
-$app->response()->header('Content-Type', 'application/json');
+
 
 // POST /item/
-$app->post('/item/', function () {
-            // CONST
+$app->post('/item/', function () use($app) {
+
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
@@ -84,7 +85,7 @@ $app->post('/item/', function () {
                             $item->userid = $userid;
                         }
                     } catch (Exception $exc) {
-                        //echo $exc->getTraceAsString();
+//echo $exc->getTraceAsString();
                     }
 
 
@@ -131,14 +132,15 @@ $app->post('/item/', function () {
             }
 
 
-            // Chuyển biến từ global POST sang biến địa phương
-            // Chuyển để dễ dàng control data type thay vì gán thẳng
-            // Đúng sẽ trả về true
+// Chuyển biến từ global POST sang biến địa phương
+// Chuyển để dễ dàng control data type thay vì gán thẳng
+// Đúng sẽ trả về true
         });
 
 // GET /item/:id
-$app->get('/item/:id', function ($id) {
-            // CONST
+$app->get('/item/:id', function ($id) use ($app) {
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
@@ -160,6 +162,7 @@ $app->get('/item/:id', function ($id) {
 // PUT /item/:id
 $app->put('/item/:id', function ($id) use($app) {
 // CONST
+            $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
@@ -192,8 +195,9 @@ $app->put('/item/:id', function ($id) use($app) {
         });
 
 // DELETE /item/:id
-$app->delete('/item/:id', function ($id) {
+$app->delete('/item/:id', function ($id) use($app) {
 // CONST
+            $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
@@ -202,7 +206,6 @@ $app->delete('/item/:id', function ($id) {
                 $item = ORM::for_table('item_info')->find_one($id);
                 $status_before = $item->status;
                 $item->status = 0;
-                //R::trash($item);
                 $item->save();
                 $item_after = ORM::for_table('item_info')->find_one($id);
                 if ((int) $status_before == 1 && (int) $item_after->status == 0)
@@ -217,7 +220,8 @@ $app->delete('/item/:id', function ($id) {
 
 
 // GET /items/category/:id/:page/:limit
-$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
+$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) use ($app) {
+            $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
@@ -235,7 +239,8 @@ $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
             }
         });
 // GET /items/username/:username/:page/:limit
-$app->get('/items/username/:username/:page/:limit', function ($username, $page, $limit) {
+$app->get('/items/username/:username/:page/:limit', function ($username, $page, $limit) use($app) {
+            $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
