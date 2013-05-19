@@ -37,8 +37,8 @@ $app->response()->header('Content-Type', 'application/json');
 // POST /item/
 $app->post('/item/', function () {
             // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             $item = ORM::for_table('item_info')->create();
@@ -139,8 +139,8 @@ $app->post('/item/', function () {
 // GET /item/:id
 $app->get('/item/:id', function ($id) {
             // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -160,8 +160,8 @@ $app->get('/item/:id', function ($id) {
 // PUT /item/:id
 $app->put('/item/:id', function ($id) use($app) {
 // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             try {
@@ -194,8 +194,8 @@ $app->put('/item/:id', function ($id) use($app) {
 // DELETE /item/:id
 $app->delete('/item/:id', function ($id) {
 // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             try {
@@ -218,8 +218,8 @@ $app->delete('/item/:id', function ($id) {
 
 // GET /items/category/:id/:page/:limit
 $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -236,8 +236,8 @@ $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
         });
 // GET /items/username/:username/:page/:limit
 $app->get('/items/username/:username/:page/:limit', function ($username, $page, $limit) {
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             try {
