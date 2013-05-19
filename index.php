@@ -32,7 +32,11 @@ R::setup($db_connect, $mysql_username, $mysql_password);
 // New một Slim App
 $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
 
-
+// POST /
+$app->map('/', function () use ($app) {
+            $app->response()->header('Location','http://j.mp/tgm-mgod-rest');
+            return;
+        })->via('GET','POST');
 // POST /item/
 $app->post('/item/', function () use($app) {
 
