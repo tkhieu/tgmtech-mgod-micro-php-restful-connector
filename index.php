@@ -143,15 +143,19 @@ $app->post('/item/', function () use($app) {
 
 // GET /item/:id
 
-$app->get('/item/all/:page/:limit', function ($id) use ($app) {
+$app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
+            echo "here";
+
             $app->response()->header('Content-Type', 'application/json');
 // CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+             $offset = $page * $limit;
 
-            $items = R::find('item_info', 'order by updatetime DESC limit :limit offset :offset',array( ':limit' => (int) $limit, 'offset' => (int) $offset));
+            $items = R::find('item_info', 'order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
             $result = R::exportAll($items);
             $result = array_shift(R::exportAll($items));
 
