@@ -151,7 +151,7 @@ $app->get('/item/:id', function ($id) use ($app) {
             $json_false = json_encode($false);
 
             if ($id == 'all') {
-                $items = R::find('item_info');
+                $items = R::find('item_info','order by updatetime');
                 $result = R::exportAll($items);
             } else {
                 $items = R::load('item_info', $id);
@@ -234,7 +234,7 @@ $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) use 
             try {
                 $offset = $page * $limit;
 
-                $items = R::find('item_info', 'categoryid = :id limit :limit offset :offset', array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $items = R::find('item_info', 'categoryid = :id limit :limit offset :offset order by updatetime' , array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
                 $result = R::exportAll($items);
                 $json = json_encode($result);
                 echo $json;
@@ -252,7 +252,7 @@ $app->get('/items/username/:username/:page/:limit', function ($username, $page, 
             try {
                 $offset = $page * $limit;
 
-                $items = R::find('item_info', 'username = :username limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $items = R::find('item_info', 'username = :username limit :limit offset :offset order by updatetime', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
                 $result = R::exportAll($items);
                 $json = json_encode($result);
                 echo $json;
