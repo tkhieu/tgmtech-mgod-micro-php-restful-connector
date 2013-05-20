@@ -34,9 +34,9 @@ $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
 
 // POST /
 $app->map('/', function () use ($app) {
-            $app->response()->header('Location','http://j.mp/tgm-mgod-rest');
+            $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');
             return;
-        })->via('GET','POST');
+        })->via('GET', 'POST');
 // POST /item/
 $app->post('/item/', function () use($app) {
 
@@ -142,6 +142,27 @@ $app->post('/item/', function () use($app) {
         });
 
 // GET /item/:id
+
+$app->get('/item/all/:page/:limit', function ($id) use ($app) {
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
+            $success = array("status" => 1);
+            $false = array("status" => 0);
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
+
+            $items = R::find('item_info', 'limit :limit offset :offset order by updatetime order by updatetime',array( ':limit' => (int) $limit, 'offset' => (int) $offset));
+            $result = R::exportAll($items);
+            $result = array_shift(R::exportAll($items));
+
+            $json = json_encode($result);
+            if ($json == "{\"id\":0}")
+                echo $json_false;
+            else
+                echo $json;
+        });
+
+
 $app->get('/item/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
 // CONST
@@ -151,7 +172,7 @@ $app->get('/item/:id', function ($id) use ($app) {
             $json_false = json_encode($false);
 
             if ($id == 'all') {
-                $items = R::find('item_info','order by updatetime');
+                $items = R::find('item_info', 'order by updatetime');
                 $result = R::exportAll($items);
             } else {
                 $items = R::load('item_info', $id);
@@ -234,7 +255,7 @@ $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) use 
             try {
                 $offset = $page * $limit;
 
-                $items = R::find('item_info', 'categoryid = :id limit :limit offset :offset order by updatetime' , array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $items = R::find('item_info', 'categoryid = :id limit :limit offset :offset order by updatetime', array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
                 $result = R::exportAll($items);
                 $json = json_encode($result);
                 echo $json;
