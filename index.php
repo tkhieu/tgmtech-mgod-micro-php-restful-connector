@@ -145,7 +145,7 @@ $app->post('/item/', function () use($app) {
 // GET /item/:id
 
 $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
-            echo "here";
+
 
             $app->response()->header('Content-Type', 'application/json');
 // CONST
