@@ -158,13 +158,16 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
 
             $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
             $result = R::exportAll($items);
+            $count = R::count($items);
+            echo $count;
+            
             $result = array_shift(R::exportAll($items));
 
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
                 echo $json_false;
             else
-                echo $json;
+                echo "[".$json."]";
         });
 
 
