@@ -182,7 +182,7 @@ $app->get('/item/:id', function ($id) use ($app) {
             $json_false = json_encode($false);
 
             if ($id == 'all') {
-                $items = R::find('item_info', 'order by updatetime');
+                $items = R::find('item_info', 'true order by updatetime');
                 $result = R::exportAll($items);
             } else {
                 $items = R::load('item_info', $id);
