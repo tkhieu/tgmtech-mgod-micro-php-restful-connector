@@ -168,7 +168,11 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
             if ($json == "{\"id\":0}")
                 echo $json_false;
             else
+<<<<<<< HEAD
                 echo "\[".$json."\]";
+=======
+                echo "[".$json."]";
+>>>>>>> e0ce7824de675e1ade81e6c68418b4390b1f2b72
         });
 
 
