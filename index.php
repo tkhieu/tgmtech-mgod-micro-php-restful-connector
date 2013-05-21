@@ -153,23 +153,25 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
             $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
-            
-             $offset = $page * $limit;
+
+            $offset = $page * $limit;
 
             $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
             $result = R::exportAll($items);
             $count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
-      
-            
-            
+
+
+
             $result = array_shift(R::exportAll($items));
 
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
                 echo $json_false;
             else
-                echo "[".$json."]";
-
+            if ($count > 1)
+                echo $json;
+            else
+                echo "[" . $json . "]";
         });
 
 
