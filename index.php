@@ -145,7 +145,7 @@ $app->post('/item/', function () use($app) {
 // GET /item/:id
 
 $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
-            echo "here";
+
 
             $app->response()->header('Content-Type', 'application/json');
 // CONST
@@ -158,13 +158,17 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
 
             $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
             $result = R::exportAll($items);
+            $count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
+            echo $count;
+            
+            
             $result = array_shift(R::exportAll($items));
 
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
                 echo $json_false;
             else
-                echo $json;
+                echo "\[".$json."\]";
         });
 
 
