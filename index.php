@@ -159,7 +159,7 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
             $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
             $result = R::exportAll($items);
             $count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
-            echo $count;
+      
             
             
             $result = array_shift(R::exportAll($items));
