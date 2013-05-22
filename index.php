@@ -168,8 +168,11 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
             if ($json == "{\"id\":0}")
                 echo $json_false;
             else
-            if ($count > 1)
+            if ($count > 1){
                 echo $json;
+                echo $count;
+            }
+                
             else
                 echo "[" . $json . "]";
         });
