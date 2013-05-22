@@ -162,7 +162,7 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
 
 
 
-            $result = array_shift(R::exportAll($items));
+            $result = R::exportAll($items);
 
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
@@ -170,7 +170,6 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
             else
             if ($count > 1){
                 echo $json;
-                echo $count;
             }
                 
             else
