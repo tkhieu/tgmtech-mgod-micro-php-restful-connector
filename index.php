@@ -449,13 +449,10 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
 
             try {
 
-                $offset = $page * $limit;
-                $sql = 'SELECT i.* FROM item_info i JOIN favorite_item f WHERE i.id = f.itemid and f.username ="' . $username . "\" limit " . $limit . " offset " . $offset;
-                //echo $sql;
-
-                $rows = R::getAll($sql);
-                $items = R::convertToBeans('item_info', $rows);
-                echo json_encode($items);
+                $$items = R::find('item_info', 'id in (SELECT itemid FROM favorite_item WHERE username = :username limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $result = R::exportAll($items);
+                $json = json_encode($result);
+                echo $json;
             } catch (Exception $exc) {
                 echo $json_false;
             }
