@@ -375,6 +375,26 @@ $app->post('/favorite/', function () use ($app) {
             }
         });
 
+$app->get('/favorite/:id', function ($id) use ($app) {
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
+            $success = array("status" => 1);
+            $false = array("status" => 0);
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
+            try {
+                $items = R::load('favorite_item', $id);
+                $result = array_shift(R::exportAll($items));
+                $json = json_encode($result);
+                if ($json == "{\"id\":0}")
+                    echo $json_false;
+                else
+                    echo $json;
+            } catch (Exception $exc) {
+                echo $json_false;
+            }
+        });
+
 $app->run();
 /*
  * To change this template, choose Tools | Templates
