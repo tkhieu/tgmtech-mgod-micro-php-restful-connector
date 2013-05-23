@@ -329,8 +329,13 @@ $app->post('/favorite/', function () use ($app) {
 // CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $duplicate = array("status" => 2);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            $json_duplicate = json_encode($duplicate);
+
+            $item = ORM::for_table('favorite_item')->find_one();
+
 
             $fav = ORM::for_table('favorite_item')->create();
 
@@ -363,11 +368,17 @@ $app->post('/favorite/', function () use ($app) {
                     }
 
 
-                    if ($fav->save()) {
-                        echo $json_success;
+                    $item = ORM::for_table('favorite_item')->where('itemid', $itemid)->where('username', $username)->find_one();
+
+                    if (!$item) {
+                        if ($fav->save()) {
+                            echo $json_success;
+                        }
+                        else
+                            echo $json_false;
+                    } else {
+                        echo $json_duplicate;
                     }
-                    else
-                        echo $json_false;
                 }
             } catch (Exception $exc) {
                 echo $json_false;
