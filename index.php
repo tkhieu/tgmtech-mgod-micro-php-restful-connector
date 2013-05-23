@@ -433,6 +433,8 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
 
 $app->get('/favorite/username/:username', function ($username) use ($app) {
 
+            $app->response()->header('Content-Type', 'application/json');
+
             $page = $_REQUEST['page'];
             $limit = $_REQUEST['limit'];
 
