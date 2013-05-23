@@ -31,14 +31,18 @@ R::setup($db_connect, $mysql_username, $mysql_password);
 \Slim\Slim::registerAutoloader();
 // New một Slim App
 $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
+/*
+ * FOR item_info table
+ * 
+ */
+
+
 
 // GET,POST /
 $app->map('/', function () use ($app) {
             $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');
             return;
         })->via('GET', 'POST');
-
-
 // POST /item/
 $app->post('/item/', function () use($app) {
 
@@ -259,9 +263,9 @@ $app->delete('/item/:id', function ($id) use($app) {
             }
         });
 // GET /items/category/:id/:page/:limit
-$app->get('/items/category/:id/:page/:limit', function ($id) use ($app) {
+$app->get('/items/category/:id', function ($id) use ($app) {
 
-            // Lấy biến REQUEST từ global 
+// Lấy biến REQUEST từ global 
             $page = $_REQUEST['page'];
             $limit = $_REQUEST['limit'];
 
@@ -297,7 +301,7 @@ $app->get('/items/username/:username', function ($username) use($app) {
                 $page = 0;
             if ($limit == NULL)
                 $limit = 10;
-            
+
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
@@ -310,6 +314,62 @@ $app->get('/items/username/:username', function ($username) use($app) {
                 $result = R::exportAll($items);
                 $json = json_encode($result);
                 echo $json;
+            } catch (Exception $exc) {
+                echo $json_false;
+            }
+        });
+
+/*
+ * FOR favorite_item
+ * 
+ */
+
+$app->post('/favorite/', function () {
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
+            $success = array("status" => 1);
+            $false = array("status" => 0);
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
+            $fav = ORM::for_table('favorite_item')->create();
+
+            try {
+                if ($_POST != NULL) {
+                    try {
+                        if ($_POST['userid'] != null) {
+                            $userid = $_POST['userid'];
+                            $fav->userid = $userid;
+                        }
+                    } catch (Exception $exc) {
+                        
+                    }
+
+
+
+                    if ($_POST['username'] != null) {
+                        $username = $_POST['username'];
+                        $fav->username = $username;
+                    }
+
+                    if ($_POST['itemid'] != null) {
+                        $itemid = $_POST['itemid'];
+                        $fav->itemid = $itemid;
+                    }
+
+                    if ($_POST['topicid'] != null) {
+                        $topicid = $_POST['topicid'];
+                        $fav->topicid = $topicid;
+                    }
+
+
+                    if ($fav->save()) {
+                        echo $json_success;
+                        return;
+                    }
+                    else
+                        echo $json_false;
+                    return;
+                }
             } catch (Exception $exc) {
                 echo $json_false;
             }
