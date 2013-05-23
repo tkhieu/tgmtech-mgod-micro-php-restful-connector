@@ -449,7 +449,7 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
 
             try {
 
-                $$items = R::find('item_info', 'id in (SELECT itemid FROM favorite_item WHERE username = :username ) limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $items = R::find('item_info', 'id in (SELECT itemid FROM favorite_item WHERE username = :username ) limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
                 $result = R::exportAll($items);
                 $json = json_encode($result);
                 echo $json;
