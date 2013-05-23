@@ -403,9 +403,9 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
             $json_false = json_encode($false);
             try {
                 $item = ORM::for_table('favorite_item')->find_one($id);
-
+                var_dump($item);
                 try {
-                    $item->delete();
+                    //$item->delete();
                     echo $json_success;
                 } catch (Exception $exc) {
                     echo $json_false;
