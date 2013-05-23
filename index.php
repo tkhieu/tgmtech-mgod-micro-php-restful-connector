@@ -431,7 +431,7 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
         });
 
 
-$app->get('/favorite/:username', function ($username) use ($app) {
+$app->get('/favorite/username/:username', function ($username) use ($app) {
             $sql = 'SELECT i.id,posttime,updatetime,i.topicid,status,name,images,phone,address,detail,i.username,i.userid,situation,price,categoryname,categoryid FROM item_info i, favorite_item f WHERE i.id = f.itemid and f.username ="' . $username . "\"";
             $rows = R::getAll($sql);
             $items = R::convertToBeans('item_info', $rows);
