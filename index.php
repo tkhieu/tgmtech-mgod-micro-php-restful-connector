@@ -324,7 +324,7 @@ $app->get('/items/username/:username', function ($username) use($app) {
  * 
  */
 
-$app->post('/favorite/', function () {
+$app->post('/favorite/', function () use ($app) {
             $app->response()->header('Content-Type', 'application/json');
 // CONST
             $success = array("status" => 1);
