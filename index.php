@@ -32,11 +32,13 @@ R::setup($db_connect, $mysql_username, $mysql_password);
 // New một Slim App
 $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
 
-// POST /
+// GET,POST /
 $app->map('/', function () use ($app) {
             $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');
             return;
         })->via('GET', 'POST');
+
+
 // POST /item/
 $app->post('/item/', function () use($app) {
 
@@ -141,14 +143,18 @@ $app->post('/item/', function () use($app) {
 // Chuyển để dễ dàng control data type thay vì gán thẳng
 // Đúng sẽ trả về true
         });
+// GET /items/all
+$app->get('/items/all', function () use($app) {
+// Lấy biến REQUEST từ global 
+            $page = $_REQUEST['page'];
+            $limit = $_REQUEST['limit'];
 
-// GET /item/:id
-
-$app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
-
+            if ($page == NULL)
+                $page = 0;
+            if ($limit == NULL)
+                $limit = 10;
 
             $app->response()->header('Content-Type', 'application/json');
-// CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
             $json_success = json_encode($success);
@@ -168,15 +174,13 @@ $app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
             if ($json == "{\"id\":0}")
                 echo $json_false;
             else
-            if ($count > 1){
+            if ($count > 1) {
                 echo $json;
             }
-                
             else
                 echo "[" . $json . "]";
         });
-
-
+// GET /item/:id
 $app->get('/item/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
 // CONST
@@ -232,7 +236,6 @@ $app->put('/item/:id', function ($id) use($app) {
                 echo $json_false;
             }
         });
-
 // DELETE /item/:id
 $app->delete('/item/:id', function ($id) use($app) {
 // CONST
@@ -255,11 +258,18 @@ $app->delete('/item/:id', function ($id) use($app) {
                 echo $json_false;
             }
         });
-
-
-
 // GET /items/category/:id/:page/:limit
-$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) use ($app) {
+$app->get('/items/category/:id/:page/:limit', function ($id) use ($app) {
+
+            // Lấy biến REQUEST từ global 
+            $page = $_REQUEST['page'];
+            $limit = $_REQUEST['limit'];
+
+            if ($page == NULL)
+                $page = 0;
+            if ($limit == NULL)
+                $limit = 10;
+
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
@@ -278,7 +288,16 @@ $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) use 
             }
         });
 // GET /items/username/:username/:page/:limit
-$app->get('/items/username/:username/:page/:limit', function ($username, $page, $limit) use($app) {
+$app->get('/items/username/:username', function ($username) use($app) {
+// Lấy biến REQUEST từ global 
+            $page = $_REQUEST['page'];
+            $limit = $_REQUEST['limit'];
+
+            if ($page == NULL)
+                $page = 0;
+            if ($limit == NULL)
+                $limit = 10;
+            
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
@@ -295,9 +314,8 @@ $app->get('/items/username/:username/:page/:limit', function ($username, $page, 
                 echo $json_false;
             }
         });
+
 $app->run();
-
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
