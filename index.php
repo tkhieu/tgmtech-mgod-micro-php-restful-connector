@@ -432,11 +432,27 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
 
 
 $app->get('/favorite/username/:username', function ($username) use ($app) {
-            $sql = 'SELECT i.id,posttime,updatetime,i.topicid,status,name,images,phone,address,detail,i.username,i.userid,situation,price,categoryname,categoryid FROM item_info i, favorite_item f WHERE i.id = f.itemid and f.username ="' . $username . "\"";
-            $rows = R::getAll($sql);
-            $items = R::convertToBeans('item_info', $rows);
-            
-            var_dump($items);
+
+            $page = $_REQUEST['page'];
+            $limit = $_REQUEST['limit'];
+
+            if ($page == NULL)
+                $page = 0;
+            if ($limit == NULL)
+                $limit = 10;
+
+
+            $false = array("status" => 0);
+            $json_false = json_encode($false);
+
+            try {
+                $sql = 'SELECT i.id,posttime,updatetime,i.topicid,status,name,images,phone,address,detail,i.username,i.userid,situation,price,categoryname,categoryid FROM item_info i, favorite_item f WHERE i.id = f.itemid and f.username ="' . $username . "\" limit " . $limit . " offset " . $offset;
+                $rows = R::getAll($sql);
+                $items = R::convertToBeans('item_info', $rows);
+                echo json_encode($items);
+            } catch (Exception $exc) {
+                echo $json_false;
+            }
         });
 
 $app->run();
