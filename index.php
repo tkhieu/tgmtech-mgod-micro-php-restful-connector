@@ -331,6 +331,7 @@ $app->post('/favorite/', function () {
             $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+
             $fav = ORM::for_table('favorite_item')->create();
 
             try {
@@ -364,7 +365,6 @@ $app->post('/favorite/', function () {
 
                     if ($fav->save()) {
                         echo $json_success;
-                        return;
                     }
                     else
                         echo $json_false;
