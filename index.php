@@ -430,7 +430,6 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
             }
         });
 
-
 $app->get('/favorite/username/:username', function ($username) use ($app) {
 
             $app->response()->header('Content-Type', 'application/json');
@@ -451,7 +450,7 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
             try {
 
                 $offset = $page * $limit;
-                $sql = 'SELECT i.* FROM item_info i, favorite_item f WHERE i.id = f.itemid and f.username ="' . $username . "\" limit " . $limit . " offset " . $offset;
+                $sql = 'SELECT item_info.* FROM item_info i JOIN favorite_item f WHERE i.id = f.itemid and f.username ="' . $username . "\" limit " . $limit . " offset " . $offset;
                 //echo $sql;
 
                 $rows = R::getAll($sql);
