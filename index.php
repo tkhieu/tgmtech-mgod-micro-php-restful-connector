@@ -3,15 +3,20 @@
 /**
  * Status: 1 = alive, 0 = delete
  */
+//phpinfo();
+
 require 'Slim/Slim.php';
-require_once 'idiorm.php';
+require_once './idiorm.php';
 require_once './rb.php';
+require_once './config.php';
 
 // Idiorm database config
 // Db Config
-ORM::configure('mysql:host=localhost;dbname=test-slim');
-ORM::configure('username', 'root');
-ORM::configure('password', '123456');
+
+$db_connect = "mysql:host=" . $mysql_add . "\;dbname=" . $mysql_db;
+ORM::configure($db_connect);
+ORM::configure('username', $mysql_username);
+ORM::configure('password', $mysql_password);
 ORM::configure('driver_options', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 // Return config
 ORM::configure('return_result_sets', true); // returns result sets
@@ -19,20 +24,26 @@ ORM::configure('return_result_sets', true); // returns result sets
 ORM::configure('id_column', 'id');
 
 // Redbean Config
-R::setup('mysql:host=localhost;dbname=test-slim', 'root', '123456');
+R::setup($db_connect, $mysql_username, $mysql_password);
 
 
 // Đăng ký Slim với request handle
 \Slim\Slim::registerAutoloader();
 // New một Slim App
 $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
-$app->response()->header('Content-Type', 'application/json');
 
+// POST /
+$app->map('/', function () use ($app) {
+            $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');
+            return;
+        })->via('GET', 'POST');
 // POST /item/
-$app->post('/item/', function () {
-            // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+$app->post('/item/', function () use($app) {
+
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             $item = ORM::for_table('item_info')->create();
@@ -78,7 +89,7 @@ $app->post('/item/', function () {
                             $item->userid = $userid;
                         }
                     } catch (Exception $exc) {
-                        //echo $exc->getTraceAsString();
+//echo $exc->getTraceAsString();
                     }
 
 
@@ -111,6 +122,7 @@ $app->post('/item/', function () {
                 }
                 $item->status = 1;
                 $item->posttime = time();
+                $item->updatetime = time();
                 if ($item->save()) {
                     echo $json_success;
                     return;
@@ -125,25 +137,60 @@ $app->post('/item/', function () {
             }
 
 
-            // Chuyển biến từ global POST sang biến địa phương
-            // Chuyển để dễ dàng control data type thay vì gán thẳng
-            // Đúng sẽ trả về true
+// Chuyển biến từ global POST sang biến địa phương
+// Chuyển để dễ dàng control data type thay vì gán thẳng
+// Đúng sẽ trả về true
         });
 
 // GET /item/:id
-$app->get('/item/:id', function ($id) {
-            // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+
+$app->get('/items/all/:page/:limit', function ($page, $limit) use($app) {
+
+
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
+            $success = array("status" => 1);
+            $false = array("status" => 0);
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
+
+            $offset = $page * $limit;
+
+            $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
+            $result = R::exportAll($items);
+            $count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
+
+
+
+            $result = R::exportAll($items);
+
+            $json = json_encode($result);
+            if ($json == "{\"id\":0}")
+                echo $json_false;
+            else
+            if ($count > 1){
+                echo $json;
+            }
+                
+            else
+                echo "[" . $json . "]";
+        });
+
+
+$app->get('/item/:id', function ($id) use ($app) {
+            $app->response()->header('Content-Type', 'application/json');
+// CONST
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
             if ($id == 'all') {
-                $items = R::find('item_info');
+                $items = R::find('item_info', 'true order by updatetime');
                 $result = R::exportAll($items);
             } else {
                 $items = R::load('item_info', $id);
-                $result = R::exportAll($items)[0];
+                $result = array_shift(R::exportAll($items));
             }
             $json = json_encode($result);
             if ($json == "{\"id\":0}")
@@ -154,8 +201,9 @@ $app->get('/item/:id', function ($id) {
 // PUT /item/:id
 $app->put('/item/:id', function ($id) use($app) {
 // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $app->response()->header('Content-Type', 'application/json');
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             try {
@@ -186,17 +234,17 @@ $app->put('/item/:id', function ($id) use($app) {
         });
 
 // DELETE /item/:id
-$app->delete('/item/:id', function ($id) {
+$app->delete('/item/:id', function ($id) use($app) {
 // CONST
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+            $app->response()->header('Content-Type', 'application/json');
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             try {
                 $item = ORM::for_table('item_info')->find_one($id);
                 $status_before = $item->status;
                 $item->status = 0;
-                //R::trash($item);
                 $item->save();
                 $item_after = ORM::for_table('item_info')->find_one($id);
                 if ((int) $status_before == 1 && (int) $item_after->status == 0)
@@ -211,16 +259,17 @@ $app->delete('/item/:id', function ($id) {
 
 
 // GET /items/category/:id/:page/:limit
-$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+$app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) use ($app) {
+            $app->response()->header('Content-Type', 'application/json');
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
             try {
                 $offset = $page * $limit;
 
-                $items = R::find('item_info', 'categoryid = :id limit :limit offset :offset', array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $items = R::find('item_info', 'categoryid = :id order by updatetime DESC limit :limit offset :offset', array(':id' => $id, ':limit' => (int) $limit, 'offset' => (int) $offset));
                 $result = R::exportAll($items);
                 $json = json_encode($result);
                 echo $json;
@@ -229,15 +278,16 @@ $app->get('/items/category/:id/:page/:limit', function ($id, $page, $limit) {
             }
         });
 // GET /items/username/:username/:page/:limit
-$app->get('/items/username/:username/:page/:limit', function ($username, $page, $limit) {
-            $success = ["status" => 1];
-            $false = ["status" => 0];
+$app->get('/items/username/:username/:page/:limit', function ($username, $page, $limit) use($app) {
+            $app->response()->header('Content-Type', 'application/json');
+            $success = array("status" => 1);
+            $false = array("status" => 0);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             try {
                 $offset = $page * $limit;
 
-                $items = R::find('item_info', 'username = :username limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
+                $items = R::find('item_info', 'username = :username order by updatetime DESC limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
                 $result = R::exportAll($items);
                 $json = json_encode($result);
                 echo $json;
