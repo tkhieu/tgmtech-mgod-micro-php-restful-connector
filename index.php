@@ -395,6 +395,22 @@ $app->get('/favorite/:id', function ($id) use ($app) {
             }
         });
 
+$app->delete('/favorite/:id', function ($id) use ($app) {
+            $app->response()->header('Content-Type', 'application/json');
+            $success = array("status" => 1);
+            $false = array("status" => 0);
+            $json_success = json_encode($success);
+            $json_false = json_encode($false);
+            try {
+                $item = ORM::for_table('favorite_item')->find_one($id);
+
+                $item->delete();
+                echo $json_success;
+            } catch (Exception $exc) {
+                echo $json_false;
+            }
+        });
+
 $app->run();
 /*
  * To change this template, choose Tools | Templates
