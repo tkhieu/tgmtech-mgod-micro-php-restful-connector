@@ -341,7 +341,7 @@ $app->post('/favorite/', function () {
                             $fav->userid = $userid;
                         }
                     } catch (Exception $exc) {
-                        
+                        echo $exc->getTraceAsString();
                     }
 
 
@@ -368,10 +368,10 @@ $app->post('/favorite/', function () {
                     }
                     else
                         echo $json_false;
-                    return;
                 }
             } catch (Exception $exc) {
                 echo $json_false;
+                echo $exc->getTraceAsString();
             }
         });
 
