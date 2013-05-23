@@ -408,6 +408,8 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
                     if ($item) {
                         $item->delete();
                         echo $json_success;
+                    } else {
+                        echo $json_false;
                     }
                 } catch (Exception $exc) {
                     echo $json_false;
