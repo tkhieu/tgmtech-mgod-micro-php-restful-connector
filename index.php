@@ -180,6 +180,7 @@ $app->get('/items/all', function () use($app) {
             else
             if ($count > 1) {
                 echo $json;
+                echo "a";
             }
             else
                 echo "[" . $json . "]";
