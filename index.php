@@ -168,7 +168,7 @@ $app->get('/items/all', function () use($app) {
 
             $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
             $result = R::exportAll($items);
-            $count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
+            //$count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
 
 
 
@@ -178,15 +178,8 @@ $app->get('/items/all', function () use($app) {
             if ($json == "{\"id\":0}")
                 echo $json_false;
             else
-            if ($count > 1) {
                 echo $json;
-                echo $count;
-            }
-            else
-            {
-                echo $json;
-                echo $count; 
-            }
+            
             
         });
 // GET /item/:id
