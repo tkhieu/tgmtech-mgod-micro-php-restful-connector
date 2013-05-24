@@ -180,10 +180,14 @@ $app->get('/items/all', function () use($app) {
             else
             if ($count > 1) {
                 echo $json;
-                echo "a";
+                echo $count;
             }
             else
+            {
                 echo $json;
+                echo $count; 
+            }
+            
         });
 // GET /item/:id
 $app->get('/item/:id', function ($id) use ($app) {
