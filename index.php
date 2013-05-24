@@ -183,7 +183,7 @@ $app->get('/items/all', function () use($app) {
                 echo "a";
             }
             else
-                echo "[" . $json . "]";
+                echo $json;
         });
 // GET /item/:id
 $app->get('/item/:id', function ($id) use ($app) {
