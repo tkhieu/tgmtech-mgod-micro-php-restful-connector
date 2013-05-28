@@ -13,7 +13,7 @@ require_once './config.php';
 // Idiorm database config
 // Db Config
 
-$db_connect = "mysql:host=" . $mysql_add . "\;dbname=" . $mysql_db;
+$db_connect = "mysql:host=" . $mysql_add . ";dbname=" . $mysql_db;
 ORM::configure($db_connect);
 ORM::configure('username', $mysql_username);
 ORM::configure('password', $mysql_password);
