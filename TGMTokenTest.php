@@ -15,7 +15,7 @@ $timestamp = time();
 $temp = md5($key.$timestamp).  md5($timestamp). md5($secret.$timestamp);
 $sign = md5($temp);
 
-$param = array("key"=>$key,"sign"=>$sign,"timestamp"=>$timestamp);
+$param = array("Key"=>$key,"Sign"=>$sign,"Timestamp"=>$timestamp);
 
 $token = new TGMToken();
 

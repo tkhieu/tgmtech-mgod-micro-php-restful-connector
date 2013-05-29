@@ -14,17 +14,17 @@ class TGMToken {
 
     //put your code here
 
-    private $key = "tgm-mgod";
-    private $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPmcWDytmb3UxshTKgGMUB72jaed7BBPRr";
+    static private $key = "tgm-mgod";
+    static private $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPmcWDytmb3UxshTKgGMUB72jaed7BBPRr";
 
     public static function check($param) {
         $sign = $param["sign"];
         $app_key = $param["key"];
         $timestamp = $param["timestamp"];
 
-        if ($app_key == $this->key) {
+        if ($app_key == TGMToken::$key) {
             /* @var $secret type */
-            $check = md5($this->key . $timestamp) . md5($timestamp) . md5($this->secret . $timestamp);
+            $check = md5(TGMToken::$key . $timestamp) . md5($timestamp) . md5(TGMToken::$secret . $timestamp);
             $check_md5 = md5($check);
             if ($check_md5 == $sign)
                 return true;
@@ -32,16 +32,16 @@ class TGMToken {
                 return false;
         }
     }
-    
+
     public static function getparams() {
         $headers = $_REQUEST;
-        
-        if ($headers['Sign'] != null && $headers['Key'] != null && $headers['Timestamp'] != null){
-            $params = array("Key"=>$headers["Key"],"Sign"=>$headers["Sign"],"Timestamp"=>$headers["Sign"]);
+
+        if ($headers['Sign'] != null && $headers['Key'] != null && $headers['Timestamp'] != null) {
+            $params = array("Key" => $headers["Key"], "Sign" => $headers["Sign"], "Timestamp" => $headers["Sign"]);
             return $params;
         }
         return false;
-    } 
+    }
 
 }
 

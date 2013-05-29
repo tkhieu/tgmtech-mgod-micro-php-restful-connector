@@ -51,7 +51,7 @@ $app->post('/item/', function () use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -173,7 +173,7 @@ $app->get('/items/all', function () use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -181,31 +181,27 @@ $app->get('/items/all', function () use($app) {
             if (TGMToken::check($param)) {
                 $param = TGMToken::getparams();
                 if (TGMToken::check($param)) {
-                    
+                    $offset = $page * $limit;
+
+                    $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
+                    $result = R::exportAll($items);
+                    //$count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
+
+
+
+                    $result = R::exportAll($items);
+
+                    $json = json_encode($result);
+                    if ($json == "{\"id\":0}")
+                        echo $json_false;
+                    else
+                        echo $json;
                 } else {
                     echo $json_auth_false;
                 }
-
-
-
-
-                $offset = $page * $limit;
-
-                $items = R::find('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
-                $result = R::exportAll($items);
-                //$count = R::count('item_info', ' true order by updatetime DESC limit :limit offset :offset', array(':limit' => (int) $limit, 'offset' => (int) $offset));
-
-
-
-                $result = R::exportAll($items);
-
-                $json = json_encode($result);
-                if ($json == "{\"id\":0}")
-                    echo $json_false;
-                else
-                    echo $json;
             } else {
                 echo $json_auth_false;
+                
             }
         });
 // GET /item/:id
@@ -215,7 +211,7 @@ $app->get('/item/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -244,7 +240,7 @@ $app->put('/item/:id', function ($id) use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -286,7 +282,7 @@ $app->delete('/item/:id', function ($id) use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -325,7 +321,7 @@ $app->get('/items/category/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -361,7 +357,7 @@ $app->get('/items/username/:username', function ($username) use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -382,11 +378,6 @@ $app->get('/items/username/:username', function ($username) use($app) {
             }
         });
 
-/*
- * FOR favorite_item
- * 
- */
-
 $app->post('/favorite/', function () use ($app) {
             $app->response()->header('Content-Type', 'application/json');
 // CONST
@@ -394,7 +385,7 @@ $app->post('/favorite/', function () use ($app) {
             $false = array("status" => 0);
             $duplicate = array("status" => 2);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             $json_duplicate = json_encode($duplicate);
@@ -463,7 +454,7 @@ $app->get('/favorite/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -490,7 +481,7 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -531,7 +522,7 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
 
 
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($json_false);
+            $json_auth_false = json_encode($auth_false);
             $false = array("status" => 0);
             $json_false = json_encode($false);
 
