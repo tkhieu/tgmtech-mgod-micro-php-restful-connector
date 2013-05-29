@@ -13,10 +13,10 @@ require_once './config.php';
 // Idiorm database config
 // Db Config
 
-$db_connect = "mysql:host=" . $mysql_add . ";dbname=" . $mysql_db;
+$db_connect = "mysql:host=" . Config::$mysql_add . ";dbname=" . Config::$mysql_db;
 ORM::configure($db_connect);
-ORM::configure('username', $mysql_username);
-ORM::configure('password', $mysql_password);
+ORM::configure('username', Config::$mysql_username);
+ORM::configure('password', Config::$mysql_password);
 ORM::configure('driver_options', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 // Return config
 ORM::configure('return_result_sets', true); // returns result sets
@@ -24,7 +24,7 @@ ORM::configure('return_result_sets', true); // returns result sets
 ORM::configure('id_column', 'id');
 
 // Redbean Config
-R::setup($db_connect, $mysql_username, $mysql_password);
+R::setup($db_connect, Config::$mysql_username, Config::$mysql_password);
 
 
 // Đăng ký Slim với request handle
@@ -50,8 +50,19 @@ $app->post('/item/', function () use($app) {
 // CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+
             $item = ORM::for_table('item_info')->create();
 
             try {
@@ -161,8 +172,27 @@ $app->get('/items/all', function () use($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+                
+            
+            
 
             $offset = $page * $limit;
 
@@ -179,8 +209,6 @@ $app->get('/items/all', function () use($app) {
                 echo $json_false;
             else
                 echo $json;
-            
-            
         });
 // GET /item/:id
 $app->get('/item/:id', function ($id) use ($app) {
@@ -188,9 +216,18 @@ $app->get('/item/:id', function ($id) use ($app) {
 // CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             if ($id == 'all') {
                 $items = R::find('item_info', 'true order by updatetime');
                 $result = R::exportAll($items);
@@ -210,8 +247,18 @@ $app->put('/item/:id', function ($id) use($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             try {
                 $item = ORM::for_table('item_info')->find_one($id);
                 $data = json_decode($app->getInstance()->request()->getBody());
@@ -244,8 +291,18 @@ $app->delete('/item/:id', function ($id) use($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             try {
                 $item = ORM::for_table('item_info')->find_one($id);
                 $status_before = $item->status;
@@ -275,9 +332,18 @@ $app->get('/items/category/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             try {
                 $offset = $page * $limit;
 
@@ -303,8 +369,18 @@ $app->get('/items/username/:username', function ($username) use($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             try {
                 $offset = $page * $limit;
 
@@ -328,10 +404,20 @@ $app->post('/favorite/', function () use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $duplicate = array("status" => 2);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             $json_duplicate = json_encode($duplicate);
 
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             $item = ORM::for_table('favorite_item')->find_one();
 
 
@@ -389,8 +475,18 @@ $app->get('/favorite/:id', function ($id) use ($app) {
 // CONST
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             try {
                 $items = R::load('favorite_item', $id);
                 $result = array_shift(R::exportAll($items));
@@ -408,8 +504,18 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
+                
+            } else{
+                echo $json_auth_false;
+            }
+            
             try {
                 $item = ORM::for_table('favorite_item')->find_one($id);
 
@@ -441,12 +547,21 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
                 $limit = 10;
 
 
-
+            $auth_false = array("error" => "Authentication false");
+            $json_auth_false = json_encode($json_false);
             $false = array("status" => 0);
             $json_false = json_encode($false);
 
-            try {
+            
+            $param = TGMToken::getparams();
+            if(TGMToken::check($param)) {
                 
+            } else{
+                echo $json_auth_false;
+            }
+            
+            try {
+
                 $offset = $page * $limit;
 
                 $items = R::find('item_info', 'id in (SELECT itemid FROM favorite_item WHERE username = :username ) limit :limit offset :offset', array(':username' => $username, ':limit' => (int) $limit, 'offset' => (int) $offset));
