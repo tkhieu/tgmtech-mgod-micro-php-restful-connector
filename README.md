@@ -43,7 +43,9 @@ https://github.com/j4mie/idiorm
 #Framework Config
 ##Slim
 Đăng ký Slim với Instant của Request
-```\Slim\Slim::registerAutoloader();```
+```
+\Slim\Slim::registerAutoloader();
+```
 Tạo ra một Slim instant để cover request
 ```$app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));```
 Chuyển content-Type về JSON để dễ dàng trả kết quả
