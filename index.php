@@ -31,15 +31,6 @@ $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
  * 
  */
 
-echo "<pre>";
-var_dump(array(
-        'host' => parse_url($_ENV['REDISCLOUD_URL'], PHP_URL_HOST), 
-        'port' => parse_url($_ENV['REDISCLOUD_URL'], PHP_URL_PORT),
-        'password' => parse_url($_ENV['REDISCLOUD_URL'], PHP_URL_PASS), 
-));
-
-
-
 // GET,POST /
 $app->map('/', function () use ($app) {
             $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');

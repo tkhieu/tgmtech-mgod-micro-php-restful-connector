@@ -26,7 +26,7 @@ class Config {
     static $redis_server = array(
         'host' => 'pub-redis-19822.us-east-1-2.1.ec2.garantiadata.com',
         'port' => 19822,
-        'database' => 'app15752661'
+        'password' => 'EWMTnsbqMT9bqnTQ'
     );
 
 }
