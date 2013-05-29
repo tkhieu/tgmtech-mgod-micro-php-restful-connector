@@ -174,7 +174,7 @@ $app->get('/items/all', function () use($app) {
             if (TGMToken::check($param)) {
                 // Redis Write Cache
                 $redis_client = new Predis\Client(Config::$redis_server,array('prefix' => 'items:')); 
-                $client = new Predis\Client($single_server, array('prefix' => 'nrk:'));
+                //$client = new Predis\Client($single_server, array('prefix' => 'nrk:'));
                 // Kiem Tra
                 $param = TGMToken::getparams();
                 if (TGMToken::check($param)) {
@@ -191,7 +191,7 @@ $app->get('/items/all', function () use($app) {
                     $json = json_encode($result);
                     
                     
-                    $client->set('all', $json);
+                    $redis_client->set('all', $json);
                     
                     if ($json == "{\"id\":0}")
                         echo $json_false;
