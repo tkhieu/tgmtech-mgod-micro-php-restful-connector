@@ -23,7 +23,7 @@ class TGMToken {
         
         if($app_key == $this->key){
             /* @var $secret type */
-            $check = $this->key . md5($timestamp) . $this->secret;
+            $check = md5($this->key.$timestamp) . md5($timestamp) . md5($this->secret.$timestamp);
             echo $check. "<br />";
             
             $check_md5 = md5($check);

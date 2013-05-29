@@ -12,7 +12,7 @@ $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPm
 
 $timestamp = time();
 
-$temp = $key.  md5($timestamp).$secret;
+$temp = md5($key.$timestamp).  md5($timestamp). md5($secret.$timestamp);
 $sign = md5($temp);
 
 $param = array("key"=>$key,"sign"=>$sign,"timestamp"=>$timestamp);
