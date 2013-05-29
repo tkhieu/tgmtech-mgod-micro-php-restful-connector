@@ -5,9 +5,6 @@
  */
 //phpinfo();
 
-require 'Slim/Slim.php';
-require_once './idiorm.php';
-require_once './rb.php';
 require_once './config.php';
 
 // Idiorm database config
@@ -22,19 +19,24 @@ ORM::configure('driver_options', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAME
 ORM::configure('return_result_sets', true); // returns result sets
 // Config id column
 ORM::configure('id_column', 'id');
-
 // Redbean Config
 R::setup($db_connect, Config::$mysql_username, Config::$mysql_password);
 
 
 // Đăng ký Slim với request handle
-\Slim\Slim::registerAutoloader();
 // New một Slim App
 $app = new \Slim\Slim(array('mode' => 'development', 'debug' => 'false'));
 /*
  * FOR item_info table
  * 
  */
+
+echo "<pre>";
+var_dump(array(
+        'host' => parse_url($_ENV['REDISCLOUD_URL'], PHP_URL_HOST), 
+        'port' => parse_url($_ENV['REDISCLOUD_URL'], PHP_URL_PORT),
+        'password' => parse_url($_ENV['REDISCLOUD_URL'], PHP_URL_PASS), 
+));
 
 
 
@@ -179,6 +181,10 @@ $app->get('/items/all', function () use($app) {
 
             $param = TGMToken::getparams();
             if (TGMToken::check($param)) {
+                // Redis Write Cache
+                $redis_client = new Predis\Client(Config::$redis_server,array('prefix' => 'items:')); 
+                $client = new Predis\Client($single_server, array('prefix' => 'nrk:'));
+                // Kiem Tra
                 $param = TGMToken::getparams();
                 if (TGMToken::check($param)) {
                     $offset = $page * $limit;
@@ -192,6 +198,10 @@ $app->get('/items/all', function () use($app) {
                     $result = R::exportAll($items);
 
                     $json = json_encode($result);
+                    
+                    
+                    $client->set('all', $json);
+                    
                     if ($json == "{\"id\":0}")
                         echo $json_false;
                     else
