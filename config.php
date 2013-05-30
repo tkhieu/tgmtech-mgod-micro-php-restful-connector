@@ -20,11 +20,11 @@ class Config {
     static public $mysql_password = "4d21803e";
     static public $mysql_db = "heroku_30763ce34eaaa50";
     static public $redis_server = array(
-//        'host' => 'pub-redis-19822.us-east-1-2.1.ec2.garantiadata.com',
-//        'port' => 19822,
-//        'password' => 'EWMTnsbqMT9bqnTQ'
-        'host' => 'localhost',
-        'port' => 6379
+        'host' => 'pub-redis-19822.us-east-1-2.1.ec2.garantiadata.com',
+        'port' => 19822,
+        'password' => 'EWMTnsbqMT9bqnTQ'
+//        'host' => 'localhost',
+//        'port' => 6379
     );
 
 }
