@@ -13,11 +13,13 @@ Version 1.0
 * Hổ trợ GET by Username và Category ID
 * Hổ trợ Paging cho GET by Username và Category ID
 * Add Heroku Demo App http://tgm-mgod-rest.herokuapp.com/index.php/
+
 ## v 0.3 ##
 * Chuyển đổi paging thành dạng ?page=a&limit=b
 * Thêm bảng favorite_item
 * Thêm RESTful API cho /favorite/
 * Sửa một số lỗi liên quan đến báo lỗi
+
 ## v 1.0 - Big Upgrade ##
 * Thêm Lớp TGMToken để thực iện việc xác thực khi gửi và nhận Request
 * Hổ trợ Caching bằng Redis.io để tăng tốc cho quá trình GET
