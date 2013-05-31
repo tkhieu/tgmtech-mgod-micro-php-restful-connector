@@ -39,10 +39,3 @@ https://github.com/codeguy/Slim
 #### IdiORM ####
 ##### ORM, Easy to get data for CRUD #####
 https://github.com/j4mie/idiorm
-
-# Framework Config #
-## Slim ##
-Đăng ký Slim với Instant của Request
-```
-\Slim\Slim::registerAutoloader();
-```
