@@ -1,8 +1,13 @@
 <?php
 
+// Require Autoload nhằm tự load các config và thư viện cần thiết
 require_once './autoload.php';
 
+// Khởi tạo Slim
+
 $app = new \Slim\Slim(array('mode' => 'production', 'debug' => 'false'));
+
+// Map Index về trang Docs
 $app->map('/', function () use ($app) {
             $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');
             return;
@@ -10,23 +15,27 @@ $app->map('/', function () use ($app) {
 
 /*
  * NHÓM DÀNH CHO ITEMS
- *  
- * 
  */
 
+// POST /item/
 $app->post('/item/', function () use($app) {
 
+            // Chuyển Content-Type về JSON
             $app->response()->header('Content-Type', 'application/json');
+            // Định nghĩa và chuyển về JSON các dạng status
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
             $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+            // Lấy các Params của Token
             $param = TGMToken::getparams();
             if (TGMToken::check($param)) {
+                // Tạo ra một biến $item và map vào bảng item_info
                 $item = ORM::for_table('item_info')->create();
 
+                // Lấy các thông tin từ biến POST
                 try {
                     if ($_POST != null) {
 
@@ -95,12 +104,17 @@ $app->post('/item/', function () use($app) {
                             $item->images = $images;
                         }
                     }
+
+                    // Đưa status = 1 => Item đó sử dụng được
                     $item->status = 1;
+                    // Gán thời gian
                     $item->posttime = time();
                     $item->updatetime = time();
+                    // Kiểm tra kết quả của hạnh động Save
                     if ($item->save()) {
                         echo $json_success;
                         try {
+                            // Xoá cache của các namespace items trong redis để refresh cache
                             Caching::delete($prefix = Config::$redis_prefix, 'items:*');
                         } catch (Exception $exc) {
                             echo $exc->getTraceAsString();
@@ -109,6 +123,7 @@ $app->post('/item/', function () use($app) {
                         return;
                     }
                     else
+                    // Trả về khi false
                         echo $json_false;
                     return;
                 } catch (Exception $exc) {
@@ -116,11 +131,16 @@ $app->post('/item/', function () use($app) {
                     return;
                 }
             } else {
+                // Trả về khi auth false
                 echo $json_auth_false;
             }
         });
+
+// PUT /item/:id
 $app->put('/item/:id', function ($id) use($app) {
+            // Trả về JSON
             $app->response()->header('Content-Type', 'application/json');
+            // Định nghĩa và Encode JSON
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
@@ -128,13 +148,15 @@ $app->put('/item/:id', function ($id) use($app) {
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
+            // Lấy Params của Token
             $param = TGMToken::getparams();
             if (TGMToken::check($param)) {
                 try {
+                    // Tìm Item theo ID
                     $item = ORM::for_table('item_info')->find_one($id);
+                    // Decode từ JSON về Object và chuyển qua Object của ORM
                     $data = json_decode($app->getInstance()->request()->getBody());
                     $item->name = $data->name;
-
                     $item->name = $data->name;
                     $item->topicid = $data->topicid;
                     $item->phone = $data->phone;
@@ -148,12 +170,16 @@ $app->put('/item/:id', function ($id) use($app) {
                     $item->categoryid = $data->categoryid;
                     $item->images = $data->images;
                     $item->updatetime = time();
+
+                    // Save xuống Db
                     if ($item->save()) {
                         echo $json_success;
+                        // Refresh Cache
                         try {
                             Caching::delete($prefix = Config::$redis_prefix, 'item:' . $id);
                             Caching::delete($prefix = Config::$redis_prefix, 'items:*');
                         } catch (Exception $exc) {
+                            
                         }
                     }
                     else
@@ -165,8 +191,12 @@ $app->put('/item/:id', function ($id) use($app) {
                 echo $json_auth_false;
             }
         });
+
+// DELETE /item/:id
 $app->delete('/item/:id', function ($id) use($app) {
+            // Chuyển về JSON
             $app->response()->header('Content-Type', 'application/json');
+            // Định nghĩa và Encode JSON
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
@@ -188,6 +218,7 @@ $app->delete('/item/:id', function ($id) use($app) {
                             Caching::delete($prefix = Config::$redis_prefix, 'item:' . $id);
                             Caching::delete($prefix = Config::$redis_prefix, 'items:*');
                         } catch (Exception $exc) {
+                            
                         }
                     }
                     else
@@ -414,7 +445,7 @@ $app->post('/favorite/', function () use ($app) {
                                 try {
                                     Caching::delete(Config::$redis_prefix, ':favorite:username:' . $username . ":*");
                                 } catch (Exception $exc) {
- 
+                                    
                                 }
                             }
                             else
