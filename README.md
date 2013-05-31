@@ -43,6 +43,6 @@ https://github.com/j4mie/idiorm
 #Framework Config
 ##Slim
 Đăng ký Slim với Instant của Request
-```'php'
+```php
 \Slim\Slim::registerAutoloader();
 ```
