@@ -26,8 +26,8 @@ class TGMToken {
         
         if ($app_key == TGMToken::$key) {
             /* @var $secret type */
-            $check = md5(TGMToken::$key . $timestamp) . md5($timestamp) . md5(TGMToken::$secret . $timestamp);
-            $check_md5 = md5($check);
+            $check = md5(md5(TGMToken::$key . $timestamp) . md5($timestamp) . md5(TGMToken::$secret . $timestamp));
+            $check_md5 = ($check);
             if ($check_md5 == $sign)
                 return true;
             else

@@ -12,7 +12,7 @@ $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPm
 
 $timestamp = "1";
 
-echo $temp = md5($key.$timestamp);
+$temp = md5($key.$timestamp);
 $temp2 =  md5($timestamp);
 $temp3 = md5($secret.$timestamp);
 
@@ -24,5 +24,5 @@ $param = array("key"=>$key,"sign"=>$sign,"timestamp"=>$timestamp);
 $token = new TGMToken();
 
 $token->check($param);
-
+echo $sign;
 ?>
