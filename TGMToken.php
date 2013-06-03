@@ -19,6 +19,7 @@ class TGMToken {
 
     public static function check($param) {
         echo "<pre>";
+        echo md5("1");
         var_dump($param);
         die();
         $sign = $param["sign"];
