@@ -32,8 +32,8 @@ class TGMToken {
                 return true;
             else
                 return false;
-        }
-        return false;
+        } else
+            return false;
         
     }
 
@@ -47,7 +47,6 @@ class TGMToken {
             $params = array("key" => $headers["key"], "sign" => $headers["sign"], "timestamp" => $headers["timestamp"]);
             return $params;
         }
-        return false;
     }
 
 }
