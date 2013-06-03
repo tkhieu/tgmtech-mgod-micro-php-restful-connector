@@ -137,7 +137,7 @@ $app->post('/item/', function () use($app) {
                 }
             } else {
                 // Trả về khi auth false
-                echo $json_auth_false;
+                echo '['.$json_auth_false.']';
             }
         });
 
@@ -194,7 +194,7 @@ $app->put('/item/:id', function ($id) use($app) {
                     echo $json_false;
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 
@@ -233,7 +233,7 @@ $app->delete('/item/:id', function ($id) use($app) {
                     echo $json_false;
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 
@@ -274,7 +274,7 @@ $app->get('/items/all', function () use($app) {
                     }
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 $app->get('/item/:id', function ($id) use ($app) {
@@ -308,7 +308,7 @@ $app->get('/item/:id', function ($id) use ($app) {
                     }
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 $app->get('/items/category/:id', function ($id) use ($app) {
@@ -347,7 +347,7 @@ $app->get('/items/category/:id', function ($id) use ($app) {
                     }
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 $app->get('/items/username/:username', function ($username) use($app) {
@@ -387,7 +387,7 @@ $app->get('/items/username/:username', function ($username) use($app) {
                     }
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 
@@ -466,7 +466,7 @@ $app->post('/favorite/', function () use ($app) {
                     echo $json_false;
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 
@@ -499,7 +499,7 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
                     echo $json_false;
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 
@@ -531,7 +531,7 @@ $app->get('/favorite/:id', function ($id) use ($app) {
                     }
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 
@@ -571,7 +571,7 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
                     }
                 }
             } else {
-                echo $json_auth_false;
+                 echo '['.$json_auth_false.']';
             }
         });
 $app->run();
