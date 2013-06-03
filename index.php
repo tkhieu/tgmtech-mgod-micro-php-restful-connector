@@ -9,7 +9,7 @@ $app = new \Slim\Slim(array('mode' => 'production', 'debug' => 'false'));
 
 
 $param = TGMToken::getparams();
-            var_dump($param);
+          //  var_dump($param);
 
 // Map Index về trang Docs
 $app->map('/', function () use ($app) {
@@ -149,7 +149,7 @@ $app->put('/item/:id', function ($id) use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -206,7 +206,7 @@ $app->delete('/item/:id', function ($id) use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -250,7 +250,7 @@ $app->get('/items/all', function () use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -282,7 +282,7 @@ $app->get('/item/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -324,7 +324,7 @@ $app->get('/items/category/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -363,7 +363,7 @@ $app->get('/items/username/:username', function ($username) use($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -406,7 +406,7 @@ $app->post('/favorite/', function () use ($app) {
             $false = array("status" => 0);
             $duplicate = array("status" => 2);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             $json_duplicate = json_encode($duplicate);
@@ -475,7 +475,7 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -508,7 +508,7 @@ $app->get('/favorite/:id', function ($id) use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
@@ -546,7 +546,7 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
                 $limit = 10;
 
             $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+            $json_auth_false = json_encode(TGMToken::getparams());
             $false = array("status" => 0);
             $json_false = json_encode($false);
 
