@@ -31,6 +31,7 @@ $app->post('/item/', function () use($app) {
             $json_false = json_encode($false);
             // Lấy các Params của Token
             $param = TGMToken::getparams();
+            
             if (TGMToken::check($param)) {
                 // Tạo ra một biến $item và map vào bảng item_info
                 $item = ORM::for_table('item_info')->create();
@@ -150,6 +151,7 @@ $app->put('/item/:id', function ($id) use($app) {
 
             // Lấy Params của Token
             $param = TGMToken::getparams();
+            echo var_dump($param);
             if (TGMToken::check($param)) {
                 try {
                     // Tìm Item theo ID
