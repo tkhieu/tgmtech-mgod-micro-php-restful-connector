@@ -7,6 +7,10 @@ require_once './autoload.php';
 
 $app = new \Slim\Slim(array('mode' => 'production', 'debug' => 'false'));
 
+
+$param = TGMToken::getparams();
+            var_dump($param);
+
 // Map Index về trang Docs
 $app->map('/', function () use ($app) {
             $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');
