@@ -36,8 +36,8 @@ class TGMToken {
     public static function getparams() {
         $headers = $_REQUEST;
 
-        if ($headers['Sign'] != null && $headers['Key'] != null && $headers['Timestamp'] != null) {
-            $params = array("Key" => $headers["Key"], "Sign" => $headers["Sign"], "Timestamp" => $headers["Sign"]);
+        if ($headers['sign'] != null && $headers['key'] != null && $headers['timestamp'] != null) {
+            $params = array("key" => $headers["key"], "sign" => $headers["sign"], "timestamp" => $headers["timestamp"]);
             return $params;
         }
         return false;
