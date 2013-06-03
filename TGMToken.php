@@ -19,13 +19,14 @@ class TGMToken {
 
     public static function check($param) {
         echo "<pre>";
-        echo md5("1");
+        
         var_dump($param);
-        die();
-        $sign = $param["sign"];
-        $app_key = $param["key"];
-        $timestamp = $param["timestamp"];
+        
+        echo $sign = $param["sign"];
+        echo $app_key = $param["key"];
+        echo $timestamp = $param["timestamp"];
 
+        return;
         if ($app_key == TGMToken::$key) {
             /* @var $secret type */
             $check = md5(TGMToken::$key . $timestamp) . md5($timestamp) . md5(TGMToken::$secret . $timestamp);
