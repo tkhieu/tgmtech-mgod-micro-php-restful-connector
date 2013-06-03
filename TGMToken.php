@@ -18,6 +18,9 @@ class TGMToken {
     static private $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPmcWDytmb3UxshTKgGMUB72jaed7BBPRr";
 
     public static function check($param) {
+        echo "<pre>";
+        var_dump($param);
+        die();
         $sign = $param["sign"];
         $app_key = $param["key"];
         $timestamp = $param["timestamp"];
