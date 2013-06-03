@@ -364,6 +364,7 @@ $app->get('/items/username/:username', function ($username) use($app) {
             $json_false = json_encode($false);
 
             $param = TGMToken::getparams();
+            echo $param;
             if (TGMToken::check($param)) {
 
                 if (Caching::checkexist(Config::$redis_prefix, 'items:username:' . $username . ':page:' . $page . ':limit:' . $limit)) {
