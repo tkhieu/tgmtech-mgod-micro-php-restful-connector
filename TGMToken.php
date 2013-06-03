@@ -18,15 +18,12 @@ class TGMToken {
     static private $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPmcWDytmb3UxshTKgGMUB72jaed7BBPRr";
 
     public static function check($param) {
-        echo "<pre>";
-        
-        var_dump($param);
-        
-        echo $sign = $param["sign"];
-        echo $app_key = $param["key"];
-        echo $timestamp = $param["timestamp"];
+            return true;
+        $sign = $param["sign"];
+        $app_key = $param["key"];
+        $timestamp = $param["timestamp"];
 
-        return;
+        
         if ($app_key == TGMToken::$key) {
             /* @var $secret type */
             $check = md5(TGMToken::$key . $timestamp) . md5($timestamp) . md5(TGMToken::$secret . $timestamp);
@@ -36,11 +33,15 @@ class TGMToken {
             else
                 return false;
         }
+        
     }
 
     public static function getparams() {
         $headers = $_REQUEST;
 
+        
+        
+        
         if ($headers['sign'] != null && $headers['key'] != null && $headers['timestamp'] != null) {
             $params = array("key" => $headers["key"], "sign" => $headers["sign"], "timestamp" => $headers["timestamp"]);
             return $params;
