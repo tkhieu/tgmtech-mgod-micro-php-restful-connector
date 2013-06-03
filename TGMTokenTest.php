@@ -13,7 +13,9 @@ $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPm
 $timestamp = "";
 
  echo $temp = md5($key.$timestamp).  md5($timestamp). md5($secret.$timestamp);
+ echo "<br />";
 echo $sign = md5($temp);
+echo "<br />";
 
 $param = array("key"=>$key,"sign"=>$sign,"timestamp"=>$timestamp);
 
