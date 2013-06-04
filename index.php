@@ -3,6 +3,7 @@
 // Require Autoload nhằm tự load các config và thư viện cần thiết
 require_once './autoload.php';
 
+
 // Khởi tạo Slim
 
 $app = new \Slim\Slim(array('mode' => 'production', 'debug' => 'false'));
