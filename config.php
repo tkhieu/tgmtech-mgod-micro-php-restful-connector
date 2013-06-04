@@ -14,6 +14,7 @@ class Config {
 
     static public $key = "tgm-mgod";
     static public $redis_prefix = "tgm-mgod:";
+    static public $hash_formula = 'md5( md5($key.$timestamp) . md5($timestamp) . md5($secret.$timestamp) )';   // be careful with this !
     static public $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPmcWDytmb3UxshTKgGMUB72jaed7BBPRr";
     static public $mysql_add = "us-cdbr-east-03.cleardb.com";
     static public $mysql_username = "b0f193c24de04b";

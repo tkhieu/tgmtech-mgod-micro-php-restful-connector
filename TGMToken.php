@@ -1,56 +1,41 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of TGMToken
- *
- * @author hieu
+ * TGMToken FileAPI Class
  */
-class TGMToken {
+class TGMToken
+{
+	protected $secret = 'nekotmgt';
+	protected $hash_formula = '$signature === md5($secret)';
+	protected $signature;
+	protected $params;
 
-    //put your code here
+	public function __construct($signature, $params)
+	{
+		$this->signature = $signature;
+		$this->params = $params;
+	}
 
-    static private $key = "tgm-mgod";
-    static private $secret = "cjpmrJG7nRqD9NDRFRKJSwNZKZybKe69Vt8Qd8cxmCEMGxSzPvGd4u4ftUDvZSWqV9hPmcWDytmb3UxshTKgGMUB72jaed7BBPRr";
+	public function setSecret($secret)
+	{
+		$this->secret = $secret;
+	}
 
-    public static function check($param) {
-         return true;
-        $sign = $param["sign"];
-        $app_key = $param["key"];
-        $timestamp = $param["timestamp"];
+	public function setHashFormula($formula)
+	{
+		$this->hash_formula = $formula;
+	}
 
-        
-        if ($app_key === TGMToken::$key) {
-            /* @var $secret type */
-            $check = md5(md5(TGMToken::$key . $timestamp) . md5($timestamp) . md5(TGMToken::$secret . $timestamp));
-            
-            md5( md5($key.$timestamp) . md5($timestamp) . md5($secret.$timestamp) );
-            
-            $check_md5 = ($check);
-            if ($check_md5 === $sign)
-                return true;
-            else
-                return false;
-        } else
-            return false;
-        
-    }
+	public function isValid()
+	{
+		$secret		= $this->secret;
+		$signature	= null; 
+		$result		= false;
 
-    public static function getparams() {
-        $headers = apache_request_headers();
-        
-        if ($headers['sign'] != null && $headers['key'] != null && $headers['timestamp'] != null) {
-            $params = array("key" => $headers["key"], "sign" => $headers["sign"], "timestamp" => $headers["timestamp"]);
-            return $params;
-        }
-        
-       
-    }
+		extract($this->params);
 
+		$code = '$signature = ' . $this->hash_formula . ';';
+		eval($code);
+
+		return ($this->signature === $signature);
+	}
 }
-
-?>
