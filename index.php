@@ -13,6 +13,34 @@ $app->map('/', function () use ($app) {
             return;
         })->via('GET', 'POST');
 
+$app->hook('slim.before.dispatch', function () use ($app) {
+    $auth_false = array("error" => "Authentication false");
+    $json_auth_false = json_encode($auth_false);
+    $headers = apache_request_headers();
+    $get_header = function($name) use ($headers) {
+        return isset($headers[$name]) ? $headers[$name] : null;
+    };
+
+        if ($get_header('key') !== Config::$key || !$get_header('timestamp')) {
+            header('Content-Type: application/json');
+            die($json_auth_false);
+        }
+
+        $params = array(
+            'key'       => $get_header('key'),
+            'timestamp' => $get_header('timestamp')
+        );
+
+        $token = new TGMToken($get_header('sign'), $params);
+        $token->setSecret(Config::$secret);
+        $token->setHashFormula(Config::$hash_formula);
+
+        if (!$token->isValid()) {
+            header('Content-Type: application/json');
+            die($json_auth_false);
+        }
+});
+
 /*
  * NHÓM DÀNH CHO ITEMS
  */
@@ -25,114 +53,106 @@ $app->post('/item/', function () use($app) {
             // Định nghĩa và chuyển về JSON các dạng status
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
-            // Lấy các Params của Token
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
-                // Tạo ra một biến $item và map vào bảng item_info
-                $item = ORM::for_table('item_info')->create();
 
-                // Lấy các thông tin từ biến POST
-                try {
-                    if ($_POST != null) {
+            // Tạo ra một biến $item và map vào bảng item_info
+            $item = ORM::for_table('item_info')->create();
 
-                        if ($_POST['name'] != null) {
-                            $name = $_POST['name'];
-                            $item->name = $name;
-                        }
+            // Lấy các thông tin từ biến POST
+            try {
+                if ($_POST != null) {
 
-                        if ($_POST['topicid'] != null) {
-                            $topicid = $_POST['topicid'];
-                            $item->topicid = $topicid;
-                        }
-
-
-                        if ($_POST['phone'] != null) {
-                            $phone = $_POST['phone'];
-                            $item->phone = $phone;
-                        }
-
-                        if ($_POST['address'] != null) {
-                            $address = $_POST['address'];
-                            $item->address = $address;
-                        }
-
-
-                        if ($_POST['detail'] != null) {
-                            $detail = $_POST['detail'];
-                            $item->detail = $detail;
-                        }
-
-                        if ($_POST['username'] != null) {
-                            $username = $_POST['username'];
-                            $item->username = $username;
-                        }
-
-                        try {
-                            if ($_POST['userid'] != null) {
-                                $userid = $_POST['userid'];
-                                $item->userid = $userid;
-                            }
-                        } catch (Exception $exc) {
-                            
-                        }
-
-                        if ($_POST['situation'] != null) {
-                            $situation = $_POST['situation'];
-                            $item->situation = $situation;
-                        }
-
-                        if ($_POST['price'] != null) {
-                            $price = $_POST['price'];
-                            $item->price = $price;
-                        }
-
-                        if ($_POST['categoryname'] != null) {
-                            $categoryname = $_POST['categoryname'];
-                            $item->categoryname = $categoryname;
-                        }
-
-                        if ($_POST['categoryid'] != null) {
-                            $categoryid = $_POST['categoryid'];
-                            $item->categoryid = $categoryid;
-                        }
-                        if ($_POST['images'] != null) {
-                            $images = $_POST['images'];
-                            $item->images = $images;
-                        }
+                    if ($_POST['name'] != null) {
+                        $name = $_POST['name'];
+                        $item->name = $name;
                     }
 
-                    // Đưa status = 1 => Item đó sử dụng được
-                    $item->status = 1;
-                    // Gán thời gian
-                    $item->posttime = time();
-                    $item->updatetime = time();
-                    // Kiểm tra kết quả của hạnh động Save
-                    if ($item->save()) {
-                        echo $json_success;
-                        try {
-                            // Xoá cache của các namespace items trong redis để refresh cache
-                            Caching::delete($prefix = Config::$redis_prefix, 'items:*');
-                        } catch (Exception $exc) {
-                            echo $exc->getTraceAsString();
-                        }
-
-                        return;
+                    if ($_POST['topicid'] != null) {
+                        $topicid = $_POST['topicid'];
+                        $item->topicid = $topicid;
                     }
-                    else
-                    // Trả về khi false
-                        echo $json_false;
-                    return;
-                } catch (Exception $exc) {
-                    echo $json_false;
+
+
+                    if ($_POST['phone'] != null) {
+                        $phone = $_POST['phone'];
+                        $item->phone = $phone;
+                    }
+
+                    if ($_POST['address'] != null) {
+                        $address = $_POST['address'];
+                        $item->address = $address;
+                    }
+
+
+                    if ($_POST['detail'] != null) {
+                        $detail = $_POST['detail'];
+                        $item->detail = $detail;
+                    }
+
+                    if ($_POST['username'] != null) {
+                        $username = $_POST['username'];
+                        $item->username = $username;
+                    }
+
+                    try {
+                        if ($_POST['userid'] != null) {
+                            $userid = $_POST['userid'];
+                            $item->userid = $userid;
+                        }
+                    } catch (Exception $exc) {
+                        
+                    }
+
+                    if ($_POST['situation'] != null) {
+                        $situation = $_POST['situation'];
+                        $item->situation = $situation;
+                    }
+
+                    if ($_POST['price'] != null) {
+                        $price = $_POST['price'];
+                        $item->price = $price;
+                    }
+
+                    if ($_POST['categoryname'] != null) {
+                        $categoryname = $_POST['categoryname'];
+                        $item->categoryname = $categoryname;
+                    }
+
+                    if ($_POST['categoryid'] != null) {
+                        $categoryid = $_POST['categoryid'];
+                        $item->categoryid = $categoryid;
+                    }
+                    if ($_POST['images'] != null) {
+                        $images = $_POST['images'];
+                        $item->images = $images;
+                    }
+                }
+
+                // Đưa status = 1 => Item đó sử dụng được
+                $item->status = 1;
+                // Gán thời gian
+                $item->posttime = time();
+                $item->updatetime = time();
+                // Kiểm tra kết quả của hạnh động Save
+                if ($item->save()) {
+                    echo $json_success;
+                    try {
+                        // Xoá cache của các namespace items trong redis để refresh cache
+                        Caching::delete($prefix = Config::$redis_prefix, 'items:*');
+                    } catch (Exception $exc) {
+                        echo $exc->getTraceAsString();
+                    }
+
                     return;
                 }
-            } else {
-                // Trả về khi auth false
-                echo $json_auth_false;
+                else
+                // Trả về khi false
+                    echo $json_false;
+                return;
+            } catch (Exception $exc) {
+                echo $json_false;
+                return;
             }
         });
 
@@ -143,52 +163,44 @@ $app->put('/item/:id', function ($id) use($app) {
             // Định nghĩa và Encode JSON
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
-            // Lấy Params của Token
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
-                try {
-                    // Tìm Item theo ID
-                    $item = ORM::for_table('item_info')->find_one($id);
-                    // Decode từ JSON về Object và chuyển qua Object của ORM
-                    $data = json_decode($app->getInstance()->request()->getBody());
-                    $item->name = $data->name;
-                    $item->name = $data->name;
-                    $item->topicid = $data->topicid;
-                    $item->phone = $data->phone;
-                    $item->address = $data->address;
-                    $item->detail = $data->detail;
-                    $item->username = $data->username;
-                    $item->userid = $data->userid;
-                    $item->situation = $data->situation;
-                    $item->price = $data->price;
-                    $item->categoryname = $data->categoryname;
-                    $item->categoryid = $data->categoryid;
-                    $item->images = $data->images;
-                    $item->updatetime = time();
+            try {
+                // Tìm Item theo ID
+                $item = ORM::for_table('item_info')->find_one($id);
+                // Decode từ JSON về Object và chuyển qua Object của ORM
+                $data = json_decode($app->getInstance()->request()->getBody());
+                $item->name = $data->name;
+                $item->name = $data->name;
+                $item->topicid = $data->topicid;
+                $item->phone = $data->phone;
+                $item->address = $data->address;
+                $item->detail = $data->detail;
+                $item->username = $data->username;
+                $item->userid = $data->userid;
+                $item->situation = $data->situation;
+                $item->price = $data->price;
+                $item->categoryname = $data->categoryname;
+                $item->categoryid = $data->categoryid;
+                $item->images = $data->images;
+                $item->updatetime = time();
 
-                    // Save xuống Db
-                    if ($item->save()) {
-                        echo $json_success;
-                        // Refresh Cache
-                        try {
-                            Caching::delete($prefix = Config::$redis_prefix, 'item:' . $id);
-                            Caching::delete($prefix = Config::$redis_prefix, 'items:*');
-                        } catch (Exception $exc) {
-                            
-                        }
+                // Save xuống Db
+                if ($item->save()) {
+                    echo $json_success;
+                    // Refresh Cache
+                    try {
+                        Caching::delete($prefix = Config::$redis_prefix, 'item:' . $id);
+                        Caching::delete($prefix = Config::$redis_prefix, 'items:*');
+                    } catch (Exception $exc) {
+                        
                     }
-                    else
-                        echo $json_false;
-                } catch (Exception $exc) {
-                    echo $json_false;
                 }
-            } else {
-                echo $json_auth_false;
+                else
+                    echo $json_false;
+            } catch (Exception $exc) {
+                echo $json_false;
             }
         });
 
@@ -199,13 +211,11 @@ $app->delete('/item/:id', function ($id) use($app) {
             // Định nghĩa và Encode JSON
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
                 try {
                     $item = ORM::for_table('item_info')->find_one($id);
                     $status_before = $item->status;
@@ -226,9 +236,7 @@ $app->delete('/item/:id', function ($id) use($app) {
                 } catch (Exception $exc) {
                     echo $json_false;
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 
 $app->get('/items/all', function () use($app) {
@@ -243,14 +251,12 @@ $app->get('/items/all', function () use($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
 
                 if (Caching::checkexist($prefix = Config::$redis_prefix, $key = 'items:all' . ':page:' . $page . ':limit:' . $limit)) {
                     echo Caching::read($prefix = Config::$redis_prefix, $key = 'items:all' . ':page:' . $page . ':limit:' . $limit);
@@ -267,21 +273,17 @@ $app->get('/items/all', function () use($app) {
                         Caching::write(Config::$redis_prefix, 'items:all' . ':page:' . $page . ':limit:' . $limit, $json);
                     }
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 $app->get('/item/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
 
                 if (Caching::checkexist(Config::$redis_prefix, 'item:' . $id)) {
                     echo Caching::read(Config::$redis_prefix, 'item:' . $id);
@@ -301,9 +303,7 @@ $app->get('/item/:id', function ($id) use ($app) {
                         Caching::write(Config::$redis_prefix, 'item:' . $id, $json);
                     }
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 $app->get('/items/category/:id', function ($id) use ($app) {
             $page = $_REQUEST['page'];
@@ -317,13 +317,11 @@ $app->get('/items/category/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
 
                 if (Caching::checkexist(Config::$redis_prefix, 'items:category:' . $id . ':page:' . $page . ':limit:' . $limit)) {
                     echo Caching::read(Config::$redis_prefix, 'items:category:' . $id . ':page:' . $page . ':limit:' . $limit);
@@ -340,9 +338,7 @@ $app->get('/items/category/:id', function ($id) use ($app) {
                         echo $json_false;
                     }
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 $app->get('/items/username/:username', function ($username) use($app) {
             $page = $_REQUEST['page'];
@@ -356,13 +352,11 @@ $app->get('/items/username/:username', function ($username) use($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
 
                 if (Caching::checkexist(Config::$redis_prefix, 'items:username:' . $username . ':page:' . $page . ':limit:' . $limit)) {
                     echo Caching::read(Config::$redis_prefix, 'items:username:' . $username . ':page:' . $page . ':limit:' . $limit);
@@ -378,9 +372,7 @@ $app->get('/items/username/:username', function ($username) use($app) {
                         echo $json_false;
                     }
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 
 
@@ -397,14 +389,12 @@ $app->post('/favorite/', function () use ($app) {
             $success = array("status" => 1);
             $false = array("status" => 0);
             $duplicate = array("status" => 2);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
             $json_duplicate = json_encode($duplicate);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
                 $item = ORM::for_table('favorite_item')->find_one();
                 $fav = ORM::for_table('favorite_item')->create();
 
@@ -457,22 +447,18 @@ $app->post('/favorite/', function () use ($app) {
                 } catch (Exception $exc) {
                     echo $json_false;
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 
 $app->delete('/favorite/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
                 try {
                     $item = ORM::for_table('favorite_item')->find_one($id);
 
@@ -490,22 +476,18 @@ $app->delete('/favorite/:id', function ($id) use ($app) {
                 } catch (Exception $exc) {
                     echo $json_false;
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 
 $app->get('/favorite/:id', function ($id) use ($app) {
             $app->response()->header('Content-Type', 'application/json');
             $success = array("status" => 1);
             $false = array("status" => 0);
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
                 if (Caching::checkexist(onfig::$redis_prefix, ':favorite:' . $id)) {
                     echo Caching::read(onfig::$redis_prefix, ':favorite:' . $id);
                 } else {
@@ -522,9 +504,7 @@ $app->get('/favorite/:id', function ($id) use ($app) {
                         echo $json_false;
                     }
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 
 $app->get('/favorite/username/:username', function ($username) use ($app) {
@@ -537,13 +517,11 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
             if ($limit == NULL)
                 $limit = 10;
 
-            $auth_false = array("error" => "Authentication false");
-            $json_auth_false = json_encode($auth_false);
+
             $false = array("status" => 0);
             $json_false = json_encode($false);
 
-            $param = TGMToken::getparams();
-            if (TGMToken::check($param)) {
+            
 
                 if (Caching::checkexist(Config::$redis_prefix, ':favorite:username:' . $username . ':page:' . $page . ':limit:' . $limit)) {
                     echo Caching::read(Config::$redis_prefix, ':favorite:username:' . $username . ':page:' . $page . ':limit:' . $limit);
@@ -562,9 +540,7 @@ $app->get('/favorite/username/:username', function ($username) use ($app) {
                         echo $json_false;
                     }
                 }
-            } else {
-                echo $json_auth_false;
-            }
+            
         });
 $app->run();
 ?>
