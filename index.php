@@ -7,6 +7,7 @@ require_once './autoload.php';
 
 $app = new \Slim\Slim(array('mode' => 'production', 'debug' => 'false'));
 
+
 // Map Index về trang Docs
 $app->map('/', function () use ($app) {
             $app->response()->header('Location', 'http://j.mp/tgm-mgod-rest');
@@ -166,6 +167,7 @@ $app->put('/item/:id', function ($id) use($app) {
             $json_success = json_encode($success);
             $json_false = json_encode($false);
 
+<<<<<<< HEAD
             try {
                 // Tìm Item theo ID
                 $item = ORM::for_table('item_info')->find_one($id);
@@ -195,6 +197,42 @@ $app->put('/item/:id', function ($id) use($app) {
                         Caching::delete($prefix = Config::$redis_prefix, 'items:*');
                     } catch (Exception $exc) {
                         
+=======
+            // Lấy Params của Token
+            $param = TGMToken::getparams();
+            echo var_dump($param);
+            if (TGMToken::check($param)) {
+                try {
+                    // Tìm Item theo ID
+                    $item = ORM::for_table('item_info')->find_one($id);
+                    // Decode từ JSON về Object và chuyển qua Object của ORM
+                    $data = json_decode($app->getInstance()->request()->getBody());
+                    $item->name = $data->name;
+                    $item->name = $data->name;
+                    $item->topicid = $data->topicid;
+                    $item->phone = $data->phone;
+                    $item->address = $data->address;
+                    $item->detail = $data->detail;
+                    $item->username = $data->username;
+                    $item->userid = $data->userid;
+                    $item->situation = $data->situation;
+                    $item->price = $data->price;
+                    $item->categoryname = $data->categoryname;
+                    $item->categoryid = $data->categoryid;
+                    $item->images = $data->images;
+                    $item->updatetime = time();
+
+                    // Save xuống Db
+                    if ($item->save()) {
+                        echo $json_success;
+                        // Refresh Cache
+                        try {
+                            Caching::delete($prefix = Config::$redis_prefix, 'item:' . $id);
+                            Caching::delete($prefix = Config::$redis_prefix, 'items:*');
+                        } catch (Exception $exc) {
+                            
+                        }
+>>>>>>> 49208c9ffafbf86f6a91eae73f86998cde5e09c0
                     }
                 }
                 else
@@ -355,8 +393,12 @@ $app->get('/items/username/:username', function ($username) use($app) {
 
             $json_success = json_encode($success);
             $json_false = json_encode($false);
+<<<<<<< HEAD
 
             
+=======
+            if (TGMToken::check($param)) {
+>>>>>>> 49208c9ffafbf86f6a91eae73f86998cde5e09c0
 
                 if (Caching::checkexist(Config::$redis_prefix, 'items:username:' . $username . ':page:' . $page . ':limit:' . $limit)) {
                     echo Caching::read(Config::$redis_prefix, 'items:username:' . $username . ':page:' . $page . ':limit:' . $limit);
