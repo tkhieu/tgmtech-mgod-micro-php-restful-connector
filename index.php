@@ -3,6 +3,25 @@
 // Require Autoload nhằm tự load các config và thư viện cần thiết
 require_once './autoload.php';
 
+if (!function_exists('getallheaders'))
+{
+	function getallheaders()
+	{
+		$headers = '';
+		foreach ($_SERVER as $name => $value) {
+			if (substr($name, 0, 5) == 'HTTP_') {
+				$name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+				if (in_array($name, array('Sign', 'Key', 'Timestamp'))) {
+					$name = strtolower($name);
+				}
+				$headers[$name] = $value;
+			}
+		}
+
+		return $headers;
+	}
+}
+
 // Khởi tạo Slim
 
 $app = new \Slim\Slim(array('mode' => 'production', 'debug' => 'false'));
@@ -17,7 +36,7 @@ $app->map('/', function () use ($app) {
 $app->hook('slim.before.dispatch', function () use ($app) {
     $auth_false = array("error" => "Authentication false");
     $json_auth_false = json_encode($auth_false);
-    $headers = apache_request_headers();
+    $headers = getallheaders();
     $get_header = function($name) use ($headers) {
         return isset($headers[$name]) ? $headers[$name] : null;
     };
